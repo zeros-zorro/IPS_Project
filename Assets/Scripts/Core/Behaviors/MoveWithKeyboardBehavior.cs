@@ -20,8 +20,17 @@ public class MoveWithKeyboardBehavior : AgentBehaviour
 
     public override Steering GetSteering()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float horizontal;
+        float vertical;
+        if (inputKeyboard == InputKeyboard.wasd)
+        {
+            horizontal = Input.GetAxis("PlayerHorizontal1");
+            vertical = Input.GetAxis("PlayerVertical1");
+        } else {
+            horizontal = Input.GetAxis("PlayerHorizontal2");
+            vertical = Input.GetAxis("PlayerVertical2");
+        }
+        
         Steering steering = new Steering();
         //implement your code here
         steering.linear = new Vector3(horizontal, 0, vertical) * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
