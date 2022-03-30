@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RingTrigger : MonoBehaviour
 {
+    public GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +19,22 @@ public class RingTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.transform.parent.gameObject.name + " triggers.");
+        if (other.gameObject.tag == GameManager.SHEEP_TAG) {
+            FindClosestPlayerAndScore();
+        }
+    }
+
+    void FindClosestPlayerAndScore() {
+        GameObject[] players = GameObject.FindGameObjectsWithTag(GameManager.PLAYER_TAG);
+        float minDistance = float.MaxValue;
+        GameObject closestPlayer = players[0];
+        foreach(GameObject player in players) {
+            float distance = (this.transform.position - player.transform.position).magnitude;
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestPlayer = player;
+            }
+        }
+        gameManager.addScoreToPlayer(closestPlayer);
     }
 }
