@@ -4,19 +4,20 @@ using UnityEngine;
 public class GhostSheepBehavior : AgentBehaviour
 {
     bool isGhost = false;
+    // Range under which the Sheep escapes
     public float minRange = 30f;
+    public float swithRate = 10f;
 
     public void Start()
     {
-        //Set the tag of this GameObject to Player
-        gameObject.tag = "GhostSheep";
-        InvokeRepeating("changeGhostSheepMode", 0f + Random.Range(0, 8), 10f);
+        //implements the switch between ghost and sheep for the ghostsheep
+        InvokeRepeating("switchGhostSheepMode", 5f + Random.Range(0, 8), swithRate);
 
     }
 
     public void Update()
     {
-        
+        gameObject.tag = isGhost ? GameManager.GHOST_TAG : GameManager.SHEEP_TAG;
     }
 
 
@@ -50,7 +51,7 @@ public class GhostSheepBehavior : AgentBehaviour
         return steering;
     }
 
-    public void changeGhostSheepMode()
+    public void switchGhostSheepMode()
     {
         isGhost = !isGhost;
     }
@@ -58,7 +59,7 @@ public class GhostSheepBehavior : AgentBehaviour
     public GameObject FindClosestEnemy()
     {
         GameObject[] gos;
-        gos = GameObject.FindGameObjectsWithTag("Player");
+        gos = GameObject.FindGameObjectsWithTag(GameManager.PLAYER_TAG);
         GameObject closest = null;
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
