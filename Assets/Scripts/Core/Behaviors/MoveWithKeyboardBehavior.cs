@@ -10,31 +10,31 @@ public enum InputKeyboard{
 
 public class MoveWithKeyboardBehavior : AgentBehaviour
 {
-    public static string HORIZONTAL = "Horizontal";
-    public static string VERTICAL = "Vertical";
-    public static string HORIZONTAL_AWSD = "HorizontalAWSD";
-    public static string VERTICAL_AWSD = "VerticalAWSD";
+    public InputKeyboard inputKeyboard;
 
-    private InputKeyboard inputKeyboard;
-    private string verticalAxis;
-    private string horizontalAxis;
-
-    // This should be set by the game manager on start
-    public void setInputKeyboard(InputKeyboard _inputKeyboard) {
-        this.inputKeyboard = _inputKeyboard;
-        this.horizontalAxis = _inputKeyboard == InputKeyboard.arrows ? HORIZONTAL : HORIZONTAL_AWSD;
-        this.verticalAxis = _inputKeyboard == InputKeyboard.arrows ? VERTICAL : VERTICAL_AWSD;
+    // Start is called before the first frame update
+    void Start()
+    {
+        gameObject.tag = "Player";
     }
 
     public override Steering GetSteering()
     {
-        float horizontal = Input.GetAxis(horizontalAxis);
-        float vertical = Input.GetAxis(verticalAxis);
-
+        float horizontal;
+        float vertical;
+        if (inputKeyboard == InputKeyboard.wasd)
+        {
+            horizontal = Input.GetAxis("PlayerHorizontal1");
+            vertical = Input.GetAxis("PlayerVertical1");
+        } else {
+            horizontal = Input.GetAxis("PlayerHorizontal2");
+            vertical = Input.GetAxis("PlayerVertical2");
+        }
+        
         Steering steering = new Steering();
-        steering.linear = new Vector3(horizontal, 0, vertical) * agent.maxAccel;
-        steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
-
+        //implement your code here
+        steering.linear = new Vector3(horizontal, 0, vertical) * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
+        linear, agent.maxAccel));
         return steering;
     }
 
