@@ -2,34 +2,42 @@
 using UnityEngine;
 
 public class GhostSheepBehavior : AgentBehaviour
-{
-    public float speed = 2.0f;
+{    
     public void Start(){
+        //Set the tag of this GameObject to Player
+        gameObject.tag = "GhostSheep";
     }
+
     public override Steering GetSteering()
     {
-        Vector3 direction = VectorAwayFromTag("Dog");
-
         Steering steering = new Steering();
-        steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(direction, agent.maxAccel));
-
+        //implement your code here.
+        GameObject target = FindClosestEnemy();
+        Vector3 targetPosition = target.transform.position;
+        Vector3 diff = targetPosition - transform.position;
+        steering.linear = diff * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
+        linear, agent.maxAccel));
         return steering;
     }
 
-    private Vector3 VectorAwayFromTag(string tag)
+    public GameObject FindClosestEnemy()
     {
-        Vector3 position = this.transform.position;
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag(tag);
-        Vector3 direction = new Vector3();
-
-        foreach (GameObject enemy in enemies)
+        GameObject[] gos;
+        gos = GameObject.FindGameObjectsWithTag("Player");
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
         {
-            Vector3 dogDistance = position - enemy.transform.position;
-            // Dog distance should never be 0
-            Vector3 inverseProportional = new Vector3(1 / dogDistance.x, 0, 1 / dogDistance.z);
-            direction = direction + inverseProportional;
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+            }
         }
-        direction = direction.normalized * speed * agent.maxAccel;
-        return direction;
+        return closest;
     }
+
 }
