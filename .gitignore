@@ -470,3 +470,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Art assets modified on each imports
+/Assets/Art/*
