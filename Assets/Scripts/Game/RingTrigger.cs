@@ -8,7 +8,7 @@ public class RingTrigger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -19,8 +19,9 @@ public class RingTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == GameManager.SHEEP_TAG) {
+        if (other.transform.parent.CompareTag(GameManager.SHEEP_TAG)) {
             FindClosestPlayerAndScore();
+            print("A sheep entered the ring");
         }
     }
 
@@ -35,6 +36,7 @@ public class RingTrigger : MonoBehaviour
                 closestPlayer = player;
             }
         }
+        print("Found closest player with tag " + closestPlayer.tag);
         gameManager.addScoreToPlayer(closestPlayer);
     }
 }

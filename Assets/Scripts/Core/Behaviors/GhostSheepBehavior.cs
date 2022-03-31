@@ -15,12 +15,6 @@ public class GhostSheepBehavior : AgentBehaviour
 
     }
 
-    public void Update()
-    {
-        gameObject.tag = isGhost ? GameManager.GHOST_TAG : GameManager.SHEEP_TAG;
-    }
-
-
     public override Steering GetSteering()
     {
         Steering steering = new Steering();
@@ -54,6 +48,7 @@ public class GhostSheepBehavior : AgentBehaviour
     public void switchGhostSheepMode()
     {
         isGhost = !isGhost;
+        gameObject.tag = isGhost ? GameManager.GHOST_TAG : GameManager.SHEEP_TAG;
     }
 
     public GameObject FindClosestEnemy()

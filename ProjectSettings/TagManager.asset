@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Dog
   - Sheep
+  - Ghost
+  - Score
   layers:
   - Default
   - TransparentFX
