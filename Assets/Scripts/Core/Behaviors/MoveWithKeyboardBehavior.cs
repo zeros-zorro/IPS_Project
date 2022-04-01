@@ -43,17 +43,6 @@ public class MoveWithKeyboardBehavior : AgentBehaviour
     {
         float horizontal = Input.GetAxis(horizontalAxis);
         float vertical = Input.GetAxis(verticalAxis);
-        /*if (verticalAxis != null && horizontalAxis != null)
-        {
-            horizontal = Input.GetAxis(horizontalAxis);
-            vertical = Input.GetAxis(verticalAxis);
-        } else
-        {
-            horizontalAxis = inputKeyboard == InputKeyboard.arrows ? HORIZONTAL : HORIZONTAL_WASD;
-            verticalAxis = inputKeyboard == InputKeyboard.arrows ? VERTICAL : VERTICAL_WASD;
-            horizontal = Input.GetAxis(horizontalAxis);
-            vertical = Input.GetAxis(verticalAxis);
-        }*/
 
         Steering steering = new Steering();
         steering.linear = new Vector3(horizontal, 0, vertical) * agent.maxAccel;
