@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class RingTrigger : MonoBehaviour
 {
-    public GameManager gameManager;
+    private AudioRing audioRing;
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        gameObject.tag = "Ring";
+        audioRing = gameObject.GetComponent<AudioRing>();
     }
 
     // Update is called once per frame
@@ -20,23 +21,17 @@ public class RingTrigger : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (other.transform.parent.CompareTag(GameManager.SHEEP_TAG)) {
-            FindClosestPlayerAndScore();
+            
+            audioRing.winPointSound();
             print("A sheep entered the ring");
+            FindClosestPlayerAndScore();
         }
     }
 
     void FindClosestPlayerAndScore() {
-        GameObject[] players = GameObject.FindGameObjectsWithTag(GameManager.PLAYER_TAG);
-        float minDistance = float.MaxValue;
-        GameObject closestPlayer = players[0];
-        foreach(GameObject player in players) {
-            float distance = (this.transform.position - player.transform.position).magnitude;
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestPlayer = player;
-            }
-        }
+        GameObject sheep = GameObject.FindGameObjectWithTag(GameManager.SHEEP_TAG);
+        GameObject closestPlayer = sheep.GetComponent<GhostSheepBehavior>().FindClosestPlayer();
         print("Found closest player with tag " + closestPlayer.tag);
-        gameManager.addScoreToPlayer(closestPlayer);
+        GameObject.FindGameObjectWithTag(GameManager.CONTROLLER_TAG).GetComponent<GameManager>().addScoreToPlayer(closestPlayer);
     }
 }

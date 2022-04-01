@@ -2,33 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//Input Keys
-public enum InputKeyboard
-{
-    arrows = 0,
-    wasd = 1
-}
+
 
 public class MoveWithKeyboardBehavior : AgentBehaviour
 {
-    public GameManager gameManager;
-    public void Start()
+    //Input Keys
+    public enum InputKeyboard
     {
-        gameManager = this.GetComponentInParent<GameManager>();
-        gameObject.tag = GameManager.PLAYER_TAG;
+        arrows = 0,
+        wasd = 1
     }
+    public GameManager gameManager;
     public static string HORIZONTAL = "Horizontal";
     public static string VERTICAL = "Vertical";
     public static string HORIZONTAL_WASD = "HorizontalWASD";
     public static string VERTICAL_WASD = "VerticalWASD";
-
     public InputKeyboard inputKeyboard;
-    private string verticalAxis;
-    private string horizontalAxis;
-    private Players playerNumber;
+    private string verticalAxis = null;
+    private string horizontalAxis = null;
+    private GameManager.Players playerNumber;
+    private CelluloAgent cellulo;
+
+    public void Start()
+    {
+        gameManager = this.GetComponentInParent<GameManager>();
+        cellulo = gameObject.GetComponent<CelluloAgent>();
+        gameObject.tag = GameManager.PLAYER_TAG;
+        setColor();
+    }
 
     // This should be set by the game manager on start
-    public void setInputKeyboard(InputKeyboard _inputKeyboard, Players _playerNumber) {
+    public void setInputKeyboard(InputKeyboard _inputKeyboard, GameManager.Players _playerNumber) {
         this.inputKeyboard = _inputKeyboard;
         this.horizontalAxis = inputKeyboard == InputKeyboard.arrows ? HORIZONTAL : HORIZONTAL_WASD;
         this.verticalAxis = inputKeyboard == InputKeyboard.arrows ? VERTICAL : VERTICAL_WASD;
@@ -39,6 +43,17 @@ public class MoveWithKeyboardBehavior : AgentBehaviour
     {
         float horizontal = Input.GetAxis(horizontalAxis);
         float vertical = Input.GetAxis(verticalAxis);
+        /*if (verticalAxis != null && horizontalAxis != null)
+        {
+            horizontal = Input.GetAxis(horizontalAxis);
+            vertical = Input.GetAxis(verticalAxis);
+        } else
+        {
+            horizontalAxis = inputKeyboard == InputKeyboard.arrows ? HORIZONTAL : HORIZONTAL_WASD;
+            verticalAxis = inputKeyboard == InputKeyboard.arrows ? VERTICAL : VERTICAL_WASD;
+            horizontal = Input.GetAxis(horizontalAxis);
+            vertical = Input.GetAxis(verticalAxis);
+        }*/
 
         Steering steering = new Steering();
         steering.linear = new Vector3(horizontal, 0, vertical) * agent.maxAccel;
@@ -46,15 +61,21 @@ public class MoveWithKeyboardBehavior : AgentBehaviour
 
         return steering;
     }
+
     public int getPlayerNumber() {
         return (int)playerNumber;
     }
-    private void OnCollisionEnter(Collision collision)
+
+    private void setColor()
     {
-        GameObject colliderGO = collision.transform.gameObject;
-        if (colliderGO.tag == GameManager.GHOST_TAG) {
-            gameManager.subScoreToPlayer(this.gameObject);
-            print("Collided with a ghost");
+        if (inputKeyboard == InputKeyboard.wasd)
+        {
+            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.blue, 255);
+        }
+        else
+        {
+            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.red, 255);
         }
     }
+
 }

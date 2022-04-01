@@ -6,20 +6,24 @@ public class GhostSheepBehavior : AgentBehaviour
     bool isGhost = false;
     // Range under which the Sheep escapes
     public float minRange = 30f;
-    public float swithRate = 10f;
+    public float swithRate = 15f;
+    private CelluloAgent cellulo;
+    private Audio audioGS;
 
     public void Start()
     {
+        cellulo = gameObject.GetComponent<CelluloAgent>();
+        audioGS = gameObject.GetComponent<Audio>();
         //implements the switch between ghost and sheep for the ghostsheep
         InvokeRepeating("switchGhostSheepMode", 5f + Random.Range(0, 8), swithRate);
-
+        cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.green, 255);
     }
 
     public override Steering GetSteering()
     {
         Steering steering = new Steering();
         //implement your code here.
-        GameObject target = FindClosestEnemy();
+        GameObject target = FindClosestPlayer();
         Vector3 targetPosition = target.transform.position;
         Vector3 diff = transform.position - targetPosition;
         if (isGhost)
@@ -48,10 +52,21 @@ public class GhostSheepBehavior : AgentBehaviour
     public void switchGhostSheepMode()
     {
         isGhost = !isGhost;
-        gameObject.tag = isGhost ? GameManager.GHOST_TAG : GameManager.SHEEP_TAG;
+        if (isGhost)
+        {
+            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.yellow, 255);
+            audioGS.wolfSound();
+            gameObject.tag = GameManager.GHOST_TAG;
+        }
+        else
+        {
+            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.green, 255);
+            gameObject.tag = GameManager.SHEEP_TAG;
+        }
+
     }
 
-    public GameObject FindClosestEnemy()
+    public GameObject FindClosestPlayer()
     {
         GameObject[] gos;
         gos = GameObject.FindGameObjectsWithTag(GameManager.PLAYER_TAG);
@@ -71,4 +86,16 @@ public class GhostSheepBehavior : AgentBehaviour
         return closest;
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (isGhost)
+        {
+            if (collision.transform.gameObject.CompareTag(GameManager.PLAYER_TAG))
+            {
+                audioGS.loosePointSound();
+                GameObject.FindGameObjectWithTag(GameManager.CONTROLLER_TAG).GetComponent<GameManager>().subScoreToPlayer(collision.gameObject);
+                print("Collided with a ghost");
+            }
+        }
+    }
 }
