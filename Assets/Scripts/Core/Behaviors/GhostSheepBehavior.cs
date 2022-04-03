@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GhostSheepBehavior : AgentBehaviour
 {
@@ -23,26 +24,17 @@ public class GhostSheepBehavior : AgentBehaviour
     {
         Steering steering = new Steering();
         //implement your code here.
-        GameObject target = FindClosestPlayer();
-        Vector3 targetPosition = target.transform.position;
-        Vector3 diff = transform.position - targetPosition;
-        if (isGhost)
+        
+        if (!isGhost) //if sheep
         {
-            diff = -diff;
-        }
-
-        if (!isGhost)
+            Vector3 dir = FindSheepDirection();
+            steering.linear = dir * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
+            linear, agent.maxAccel));
+        } else //if ghost
         {
-            if (diff.sqrMagnitude < minRange) {
-                steering.linear = diff * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
-                linear, agent.maxAccel));
-            } else
-            {
-                steering.linear = Vector3.zero * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
-                linear, agent.maxAccel));
-            }
-        } else
-        {
+            GameObject target = FindClosestPlayer();
+            Vector3 targetPosition = target.transform.position;
+            Vector3 diff = targetPosition - transform.position;
             steering.linear = diff * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
             linear, agent.maxAccel));
         }
@@ -60,7 +52,7 @@ public class GhostSheepBehavior : AgentBehaviour
         }
         else
         {
-            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.green, 255);
+            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.cyan, 255);
             gameObject.tag = GameManager.SHEEP_TAG;
         }
 
@@ -84,6 +76,30 @@ public class GhostSheepBehavior : AgentBehaviour
             }
         }
         return closest;
+    }
+
+    private Vector3 FindSheepDirection()
+    {
+        GameObject[] gos;
+        gos = GameObject.FindGameObjectsWithTag(GameManager.PLAYER_TAG);
+        List<Vector3> diffVectors = new List<Vector3>();
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = position - go.transform.position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < minRange)
+            {
+                diffVectors.Add(diff);
+            } 
+        }
+
+        Vector3 direction = Vector3.zero ;
+        foreach (Vector3 v in diffVectors)
+        {
+            direction += v;
+        }
+        return direction;
     }
 
     void OnCollisionEnter(Collision collision)
