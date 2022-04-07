@@ -15,41 +15,32 @@ public class GhostSheepBehavior : AgentBehaviour
         cellulo = gameObject.GetComponent<CelluloAgent>();
         audioGS = gameObject.GetComponent<Audio>();
         //implements the switch between ghost and sheep for the ghostsheep
-        InvokeRepeating("switchGhostSheepMode", 5f + Random.Range(0, 8), swithRate);
+        InvokeRepeating("SwitchGhostSheepMode", 5f + Random.Range(0, 8), swithRate);
         cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.green, 255);
     }
 
     public override Steering GetSteering()
     {
         Steering steering = new Steering();
-        //implement your code here.
-        GameObject target = FindClosestPlayer();
-        Vector3 targetPosition = target.transform.position;
-        Vector3 diff = transform.position - targetPosition;
-        if (isGhost)
-        {
-            diff = -diff;
-        }
 
-        if (!isGhost)
-        {
-            if (diff.sqrMagnitude < minRange) {
-                steering.linear = diff * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
-                linear, agent.maxAccel));
-            } else
-            {
-                steering.linear = Vector3.zero * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
-                linear, agent.maxAccel));
-            }
-        } else
-        {
-            steering.linear = diff * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
+        if (isGhost) {
+            GameObject target = FindClosestPlayer();
+            Vector3 targetPosition = target.transform.position;
+            Vector3 diff = targetPosition - transform.position;
+            steering.linear = diff * agent.maxAccel;
+            steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
             linear, agent.maxAccel));
+            return steering;
         }
-        return steering;
+        else
+        {
+            Vector3 direction = GetFleeingDirection();
+            steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(direction, agent.maxAccel));
+            return steering;
+        }
     }
 
-    public void switchGhostSheepMode()
+    public void SwitchGhostSheepMode()
     {
         isGhost = !isGhost;
         if (isGhost)
@@ -84,6 +75,21 @@ public class GhostSheepBehavior : AgentBehaviour
             }
         }
         return closest;
+    }
+
+    public Vector3 GetFleeingDirection() {
+
+        Vector3 finalDirection = Vector3.zero;
+
+        GameObject[] gos;
+        gos = GameObject.FindGameObjectsWithTag(GameManager.PLAYER_TAG);
+        foreach (GameObject go in gos) {
+            Vector3 diff = transform.position - go.transform.position;
+            if (diff.sqrMagnitude < minRange) {
+                finalDirection += diff;
+            }
+        }
+        return finalDirection * agent.maxAccel;
     }
 
     void OnCollisionEnter(Collision collision)
