@@ -5,10 +5,14 @@ using System.Collections.Generic;
 public class GhostSheepBehavior : AgentBehaviour
 {
     bool isGhost = false;
-    bool isInCollision = false;
+    bool wasInCollision = false;
     // Range under which the Sheep escapes
     public float minRange = 30f;
+    // Greatest time between sheep/ghost cycle
     public float swithRate = 15f;
+
+    // Range under which the ghost does not run after the dog after collision
+    public float safeRange = 6f;
     private CelluloAgent cellulo;
     private Audio audioGS;
     private GameManager game;
@@ -50,11 +54,18 @@ public class GhostSheepBehavior : AgentBehaviour
             }
             else //if ghost
             {
-                if (!isInCollision)
+                GameObject target = FindClosestPlayer();
+                Vector3 targetPosition = target.transform.position;
+                if (!wasInCollision)
                 {
-                    GameObject target = FindClosestPlayer();
-                    Vector3 targetPosition = target.transform.position;
                     direction = targetPosition - transform.position;
+                } else
+                {
+                    Vector3 diff = targetPosition - transform.position;
+                    if (diff.sqrMagnitude >= safeRange)
+                    {
+                        wasInCollision = false;
+                    }
                 }
                 steering.linear = direction * agent.maxAccel;
                 steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
@@ -121,7 +132,7 @@ public class GhostSheepBehavior : AgentBehaviour
     {
         if (isGhost)
         {
-            isInCollision = true;
+            wasInCollision = true;
             if (collision.transform.gameObject.CompareTag(GameManager.PLAYER_TAG))
             {
                 audioGS.loosePointSound();
@@ -129,11 +140,6 @@ public class GhostSheepBehavior : AgentBehaviour
                 print("Collided with a ghost");
             }
         }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        isInCollision = false;
     }
 
 }
