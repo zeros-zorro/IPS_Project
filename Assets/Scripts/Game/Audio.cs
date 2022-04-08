@@ -28,4 +28,9 @@ public class Audio : MonoBehaviour
     {
         m_MyAudioSource[1].Play();
     }
+
+    public void sheepSound()
+    {
+        m_MyAudioSource[2].Play();
+    }
 }

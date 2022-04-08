@@ -9,6 +9,8 @@ TagManager:
   - Ghost
   - Score
   - Ring
+  - WinnerScreen
+  - GameUI
   layers:
   - Default
   - TransparentFX

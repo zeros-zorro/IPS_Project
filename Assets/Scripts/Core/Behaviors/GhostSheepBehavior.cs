@@ -5,39 +5,63 @@ using System.Collections.Generic;
 public class GhostSheepBehavior : AgentBehaviour
 {
     bool isGhost = false;
+    bool isInCollision = false;
     // Range under which the Sheep escapes
     public float minRange = 30f;
     public float swithRate = 15f;
     private CelluloAgent cellulo;
     private Audio audioGS;
+    private GameManager game;
 
     public void Start()
     {
+        game = this.GetComponentInParent<GameManager>();
         cellulo = gameObject.GetComponent<CelluloAgent>();
         audioGS = gameObject.GetComponent<Audio>();
+    }
+
+    // Called by the GameManager when the START button was clicked
+    public void StartGhostSheep()
+    {
         //implements the switch between ghost and sheep for the ghostsheep
         InvokeRepeating("SwitchGhostSheepMode", 5f + Random.Range(0, 8), swithRate);
-        cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.green, 255);
+    }
+
+    private void Update()
+    {
+        if (!game.GetGameRunningStatus())
+        {
+            CancelInvoke();
+        }
     }
 
     public override Steering GetSteering()
     {
         Steering steering = new Steering();
-        
-        if (!isGhost) //if sheep
+
+        if (game.GetGameRunningStatus())
         {
-            Vector3 direction = GetFleeingDirection();
-            steering.linear = dir * agent.maxAccel;
-            steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
-            return steering;
-        } else //if ghost
-        {
-            GameObject target = FindClosestPlayer();
-            Vector3 targetPosition = target.transform.position;
-            Vector3 diff = targetPosition - transform.position;
-            steering.linear = diff * agent.maxAccel;
-            steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
-            return steering;
+            Vector3 direction = Vector3.zero;
+            if (!isGhost) //if sheep
+            {
+                direction = GetFleeingDirection();
+                steering.linear = direction * agent.maxAccel;
+                steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
+            }
+            else //if ghost
+            {
+                if (!isInCollision)
+                {
+                    GameObject target = FindClosestPlayer();
+                    Vector3 targetPosition = target.transform.position;
+                    direction = targetPosition - transform.position;
+                }
+                steering.linear = direction * agent.maxAccel;
+                steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
+            }
+        }
+
+        return steering;
     }
 
     public void SwitchGhostSheepMode()
@@ -45,13 +69,14 @@ public class GhostSheepBehavior : AgentBehaviour
         isGhost = !isGhost;
         if (isGhost)
         {
-            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.yellow, 255);
+            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.red, 255);
             audioGS.wolfSound();
             gameObject.tag = GameManager.GHOST_TAG;
         }
         else
         {
-            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.cyan, 255);
+            cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.green, 255);
+            audioGS.sheepSound();
             gameObject.tag = GameManager.SHEEP_TAG;
         }
 
@@ -96,6 +121,7 @@ public class GhostSheepBehavior : AgentBehaviour
     {
         if (isGhost)
         {
+            isInCollision = true;
             if (collision.transform.gameObject.CompareTag(GameManager.PLAYER_TAG))
             {
                 audioGS.loosePointSound();
@@ -104,4 +130,10 @@ public class GhostSheepBehavior : AgentBehaviour
             }
         }
     }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        isInCollision = false;
+    }
+
 }
