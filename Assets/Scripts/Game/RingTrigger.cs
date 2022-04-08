@@ -5,17 +5,10 @@ using UnityEngine;
 public class RingTrigger : MonoBehaviour
 {
     private AudioRing audioRing;
-    // Start is called before the first frame update
     void Start()
     {
         gameObject.tag = "Ring";
         audioRing = gameObject.GetComponent<AudioRing>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void OnTriggerEnter(Collider other)

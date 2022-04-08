@@ -16,32 +16,31 @@ public class GhostSheepBehavior : AgentBehaviour
         cellulo = gameObject.GetComponent<CelluloAgent>();
         audioGS = gameObject.GetComponent<Audio>();
         //implements the switch between ghost and sheep for the ghostsheep
-        InvokeRepeating("switchGhostSheepMode", 5f + Random.Range(0, 8), swithRate);
+        InvokeRepeating("SwitchGhostSheepMode", 5f + Random.Range(0, 8), swithRate);
         cellulo.SetVisualEffect(VisualEffect.VisualEffectConstAll, Color.green, 255);
     }
 
     public override Steering GetSteering()
     {
         Steering steering = new Steering();
-        //implement your code here.
         
         if (!isGhost) //if sheep
         {
-            Vector3 dir = FindSheepDirection();
-            steering.linear = dir * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
-            linear, agent.maxAccel));
+            Vector3 direction = GetFleeingDirection();
+            steering.linear = dir * agent.maxAccel;
+            steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
+            return steering;
         } else //if ghost
         {
             GameObject target = FindClosestPlayer();
             Vector3 targetPosition = target.transform.position;
             Vector3 diff = targetPosition - transform.position;
-            steering.linear = diff * agent.maxAccel; steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.
-            linear, agent.maxAccel));
-        }
-        return steering;
+            steering.linear = diff * agent.maxAccel;
+            steering.linear = this.transform.parent.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
+            return steering;
     }
 
-    public void switchGhostSheepMode()
+    public void SwitchGhostSheepMode()
     {
         isGhost = !isGhost;
         if (isGhost)
@@ -78,28 +77,19 @@ public class GhostSheepBehavior : AgentBehaviour
         return closest;
     }
 
-    private Vector3 FindSheepDirection()
-    {
+    public Vector3 GetFleeingDirection() {
+
+        Vector3 finalDirection = Vector3.zero;
+
         GameObject[] gos;
         gos = GameObject.FindGameObjectsWithTag(GameManager.PLAYER_TAG);
-        List<Vector3> diffVectors = new List<Vector3>();
-        Vector3 position = transform.position;
-        foreach (GameObject go in gos)
-        {
-            Vector3 diff = position - go.transform.position;
-            float curDistance = diff.sqrMagnitude;
-            if (curDistance < minRange)
-            {
-                diffVectors.Add(diff);
-            } 
+        foreach (GameObject go in gos) {
+            Vector3 diff = transform.position - go.transform.position;
+            if (diff.sqrMagnitude < minRange) {
+                finalDirection += diff;
+            }
         }
-
-        Vector3 direction = Vector3.zero ;
-        foreach (Vector3 v in diffVectors)
-        {
-            direction += v;
-        }
-        return direction;
+        return finalDirection * agent.maxAccel;
     }
 
     void OnCollisionEnter(Collision collision)
