@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
                     CanvasPlayerGUI.enabled = true;
                     break;
                 case "Canvas UI":
-                    CanvasPlayerGUI.enabled = false;
+                    CanvasPlayerGUI.enabled = true; //true for milestone1 but to be switched
                     break;
                 default: break;
             }

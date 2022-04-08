@@ -17,6 +17,12 @@ public class AudioRing : MonoBehaviour
         
     }
 
+    // To set the volume from the main menu slider
+    public void SetVolume(float volume)
+    {
+        m_MyAudioSource.volume = volume;
+    }
+
     void Update()
     {
 

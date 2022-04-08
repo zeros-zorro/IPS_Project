@@ -14,9 +14,19 @@ public class Audio : MonoBehaviour
         m_MyAudioSource = gameObject.GetComponents<AudioSource>();
     }
 
+    // Not used
     void Update()
     {
       
+    }
+
+    // To set the volume from the main menu slider
+    public void SetVolume(float volume)
+    {
+        foreach (AudioSource aud in m_MyAudioSource)
+        {
+            aud.volume = volume;
+        }
     }
 
     public void loosePointSound()
