@@ -21,7 +21,7 @@ public class GhostSheepBehavior : AgentBehaviour
     {
         game = this.GetComponentInParent<GameManager>();
         cellulo = gameObject.GetComponent<CelluloAgent>();
-        audioGS = gameObject.GetComponent<Audio>();
+        audioGS = GameObject.FindGameObjectWithTag("Audio").GetComponent<Audio>();
     }
 
     // Called by the GameManager when the START button was clicked
@@ -137,7 +137,7 @@ public class GhostSheepBehavior : AgentBehaviour
             {
                 audioGS.loosePointSound();
                 GameObject.FindGameObjectWithTag(GameManager.CONTROLLER_TAG).GetComponent<GameManager>().subScoreToPlayer(collision.transform.gameObject);
-                print("Collided with a ghost");
+                Debug.Log("Collided with a ghost");
             }
         }
     }

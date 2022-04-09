@@ -11,6 +11,7 @@ TagManager:
   - Ring
   - WinnerScreen
   - GameUI
+  - Audio
   layers:
   - Default
   - TransparentFX

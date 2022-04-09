@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
     private GameObject[] playerList;
     private int[] scoreList;
     private bool isGameOn = false;
-    private bool hasGameEnded = false;
     private Timer timer;
     private Canvas[] CanvasPlayerGUIs;
 
@@ -30,7 +29,6 @@ public class GameManager : MonoBehaviour
     {
         gameObject.tag = CONTROLLER_TAG;
         isGameOn = false;
-        hasGameEnded = false;
         timer = this.GetComponentInChildren<Timer>();
         CanvasPlayerGUIs = FindObjectsOfType<Canvas>();
         DisplayGameUI();
@@ -38,17 +36,18 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (timer.verifyIfTimeIsUp())
+        if (HasGameEnded())
         {
-            hasGameEnded = true;
+            EndGame();
             DisplayEndScreen();
-            QuitGame();
         }
     }
 
     public bool HasGameEnded()
     {
-        return hasGameEnded;
+        return GetGameRunningStatus()
+            ? timer.verifyIfTimeIsUp()
+            : false;
     }
 
     // To display the game UI (the scores, the back button, the start button)
@@ -106,11 +105,19 @@ public class GameManager : MonoBehaviour
         isGameOn = false;
     }
 
-    // To pause the game
-    public void QuitGame()
+    // To end the game
+    private void EndGame()
     {
         isGameOn = false;
+    }
+
+    // To go back to the main menu
+    public void QuitGame()
+    {
+        EndGame();
         timer.resetTimer();
+        // To reset the music
+        GameObject.FindGameObjectWithTag("Audio").GetComponent<Audio>().KillMusic();
     }
 
     // To resume the game
