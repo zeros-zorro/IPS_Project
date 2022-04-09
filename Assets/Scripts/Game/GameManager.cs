@@ -12,10 +12,12 @@ public class GameManager : MonoBehaviour
         player2 = 1
     }
     public static int DEFAULT_NUMBER_OF_PLAYERS = 2;
-    public static string SHEEP_TAG = "Sheep";
-    public static string GHOST_TAG = "Ghost";
-    public static string PLAYER_TAG = "Player";
-    public static string SCORE_TAG = "Score";
+    public static string SHEEP_TAG      = "Sheep";
+    public static string GHOST_TAG      = "Ghost";
+    public static string PLAYER_TAG     = "Player";
+    public static string SCORE_TAG      = "Score";
+    public static string AUDIO_TAG      = "Audio";
+    public static string RING_TAG       = "Ring";
     public static string CONTROLLER_TAG = "GameController";
 
     private GameObject[] playerList;
@@ -99,7 +101,7 @@ public class GameManager : MonoBehaviour
         scoreList = new int[playerList.Length];
     }
 
-    // To pause the game
+    // To pause the game (will be usefull later since different behavior than EndGame)
     public void PauseGame()
     {
         isGameOn = false;

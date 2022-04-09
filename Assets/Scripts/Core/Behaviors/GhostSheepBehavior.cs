@@ -21,7 +21,7 @@ public class GhostSheepBehavior : AgentBehaviour
     {
         game = this.GetComponentInParent<GameManager>();
         cellulo = gameObject.GetComponent<CelluloAgent>();
-        audioGS = GameObject.FindGameObjectWithTag("Audio").GetComponent<Audio>();
+        audioGS = GameObject.FindGameObjectWithTag(GameManager.AUDIO_TAG).GetComponent<Audio>();
     }
 
     // Called by the GameManager when the START button was clicked

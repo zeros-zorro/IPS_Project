@@ -7,8 +7,8 @@ public class RingTrigger : MonoBehaviour
     private Audio audioRing;
     void Start()
     {
-        gameObject.tag = "Ring";
-        audioRing = GameObject.FindGameObjectWithTag("Audio").GetComponent<Audio>();
+        gameObject.tag = GameManager.RING_TAG;
+        audioRing = GameObject.FindGameObjectWithTag(GameManager.AUDIO_TAG).GetComponent<Audio>();
     }
 
     void OnTriggerEnter(Collider other)

@@ -12,7 +12,7 @@ public class Audio : MonoBehaviour
     void Start()
     {
         //Fetch the AudioSource from the GameObject
-        gameObject.tag = "Audio";
+        gameObject.tag = GameManager.AUDIO_TAG;
         m_MyAudioSource = gameObject.GetComponents<AudioSource>();
         // To play the background music
         PlayMusic();
