@@ -2983,7 +2983,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 251024408}
   slider: {fileID: 775652100}
-  maxMinutes: 1
+  maxMinutes: 2
 --- !u!1 &1012486945
 GameObject:
   m_ObjectHideFlags: 0
