@@ -8,6 +8,7 @@ public class Audio : MonoBehaviour
 {
     private AudioSource[] m_MyAudioSource;
     public Slider slider;
+    private bool isMusicPlaying = false;
 
     void Start()
     {
@@ -16,14 +17,29 @@ public class Audio : MonoBehaviour
         m_MyAudioSource = gameObject.GetComponents<AudioSource>();
         // To play the background music
         PlayMusic();
+        isMusicPlaying = true;
         //Sets this to not be destroyed when reloading scene
         DontDestroyOnLoad(transform.gameObject);
 
     }
 
+    // To enable or disable the audio
+    public void SwitchAudioMode()
+    {
+        isMusicPlaying = !isMusicPlaying;
+        if (isMusicPlaying)
+        {
+            PlayMusic();
+        } else
+        {
+            StopMusic();
+        }
+    }
+
     // To play the background music
     public void PlayMusic()
     {
+        isMusicPlaying = true;
         if (m_MyAudioSource[0].isPlaying) return;
         m_MyAudioSource[0].Play();
     }
@@ -31,6 +47,7 @@ public class Audio : MonoBehaviour
     // To stop the background music
     public void StopMusic()
     {
+        isMusicPlaying = false;
         m_MyAudioSource[0].Stop();
     }
 
@@ -54,21 +71,33 @@ public class Audio : MonoBehaviour
 
     public void loosePointSound()
     {
-        m_MyAudioSource[1].Play();
+        if (isMusicPlaying)
+        {
+            m_MyAudioSource[1].Play();
+        }
     }
 
     public void wolfSound()
     {
-        m_MyAudioSource[2].Play();
+        if (isMusicPlaying)
+        {
+            m_MyAudioSource[2].Play();
+        }
     }
 
     public void sheepSound()
     {
-        m_MyAudioSource[3].Play();
+        if (isMusicPlaying)
+        {
+            m_MyAudioSource[3].Play();
+        }
     }
 
     public void winPointSound()
     {
-        m_MyAudioSource[4].Play();
+        if (isMusicPlaying)
+        {
+            m_MyAudioSource[4].Play();
+        }
     }
 }

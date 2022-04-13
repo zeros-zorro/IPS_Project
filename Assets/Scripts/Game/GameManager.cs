@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
 
@@ -19,12 +20,14 @@ public class GameManager : MonoBehaviour
     public static string AUDIO_TAG      = "Audio";
     public static string RING_TAG       = "Ring";
     public static string CONTROLLER_TAG = "GameController";
+    public static string PAUSE_BUTTON_TAG = "PauseButton";
 
     private GameObject[] playerList;
     private int[] scoreList;
     private bool isGameOn = false;
     private Timer timer;
     private Canvas[] CanvasPlayerGUIs;
+    private Audio gameAudio;
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +36,9 @@ public class GameManager : MonoBehaviour
         isGameOn = false;
         timer = this.GetComponentInChildren<Timer>();
         CanvasPlayerGUIs = FindObjectsOfType<Canvas>();
+        gameAudio = GameObject.FindWithTag(AUDIO_TAG).GetComponent<Audio>();
         DisplayGameUI();
+        GameObject.Find("Pause Button").GetComponent<Button>().interactable = false;
     }
 
     void Update()
@@ -59,13 +64,12 @@ public class GameManager : MonoBehaviour
         {
             switch (CanvasPlayerGUI.name)
             {
-                case "Canvas EndGame":
-                    CanvasPlayerGUI.enabled = false;
-                    break;
                 case "Canvas UI":
                     CanvasPlayerGUI.enabled = true;
                     break;
-                default: break;
+                default:
+                    CanvasPlayerGUI.enabled = false;
+                    break;
             }
         }
     }
@@ -80,17 +84,44 @@ public class GameManager : MonoBehaviour
                 case "Canvas EndGame":
                     CanvasPlayerGUI.enabled = true;
                     break;
-                case "Canvas UI":
-                    CanvasPlayerGUI.enabled = true; //true for milestone1 but to be switched
+                default:
+                    CanvasPlayerGUI.enabled = false;
                     break;
-                default: break;
             }
         }
     }
 
+    // To display the end screen with the winner(s) name
+    private void DisplayPauseScreen()
+    {
+        foreach (Canvas CanvasPlayerGUI in CanvasPlayerGUIs)
+        {
+            switch (CanvasPlayerGUI.name)
+            {
+                case "Canvas Pause":
+                    CanvasPlayerGUI.enabled = true;
+                    break;
+                case "Canvas UI":
+                    CanvasPlayerGUI.enabled = true;
+                    break;
+                default:
+                    CanvasPlayerGUI.enabled = false;
+                    break;
+            }
+        }
+    }
+
+    // To either turn off or on the audio from the in game menu 
+    public void SwitchAudio()
+    {
+        gameAudio.SwitchAudioMode();
+    }
+
     public void StartGame()
     {
-        isGameOn = true;
+        timer.SetTimer(GameParameter.gameTimer);
+        timer.Awake();
+        GameObject.Find("Pause Button").GetComponent<Button>().interactable = true;
         this.GetComponentInChildren<GhostSheepBehavior>().StartGhostSheep();
         playerList = GameObject.FindGameObjectsWithTag(PLAYER_TAG);
         for (int i = 0; i < playerList.Length; ++i)
@@ -99,18 +130,22 @@ public class GameManager : MonoBehaviour
                 .SetInputKeyboard((MoveWithKeyboardBehavior.InputKeyboard)playerList.Length - i - 1);
         }
         scoreList = new int[playerList.Length];
+        isGameOn = true;
     }
 
     // To pause the game (will be usefull later since different behavior than EndGame)
     public void PauseGame()
     {
+        timer.PauseTimer();
         isGameOn = false;
+        DisplayPauseScreen();
     }
 
     // To end the game
     private void EndGame()
     {
         isGameOn = false;
+        GameObject.Find("Pause Button").GetComponent<Button>().interactable = false;
     }
 
     // To go back to the main menu
@@ -125,8 +160,10 @@ public class GameManager : MonoBehaviour
     // To resume the game
     public void ResumeGame()
     {
+        timer.ResumeTimer();
         this.GetComponentInChildren<GhostSheepBehavior>().StartGhostSheep();
         isGameOn = true;
+        DisplayGameUI();
     }
 
     // To get if the game is running of not
