@@ -127,7 +127,10 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < playerList.Length; ++i)
         {
             playerList[i].GetComponent<MoveWithKeyboardBehavior>()
-                .SetInputKeyboard((MoveWithKeyboardBehavior.InputKeyboard)playerList.Length - i - 1);
+                .SetInputKeyboard(GameParameter.inputs[i]);
+
+            playerList[i].GetComponent<CelluloAgent>()
+                .SetVisualEffect(VisualEffect.VisualEffectConstAll, GameParameter.colors[i], 255);
         }
         scoreList = new int[playerList.Length];
         isGameOn = true;
