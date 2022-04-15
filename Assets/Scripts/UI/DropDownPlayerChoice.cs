@@ -14,12 +14,12 @@ public class DropDownPlayerChoice : MonoBehaviour
     {
         if (input == 0)
         {         
-            GameParameter.SetPlayer1Input(MoveWithKeyboardBehavior.InputKeyboard.wasd);
-            GameParameter.SetPlayer2Input(MoveWithKeyboardBehavior.InputKeyboard.arrows);
+            GameParameter.SetPlayerInput(GameManager.Players.player1, MoveWithKeyboardBehavior.InputKeyboard.wasd);
+            GameParameter.SetPlayerInput(GameManager.Players.player2, MoveWithKeyboardBehavior.InputKeyboard.arrows);
         } else if (input == 1)
         {
-            GameParameter.SetPlayer1Input(MoveWithKeyboardBehavior.InputKeyboard.arrows);
-            GameParameter.SetPlayer2Input(MoveWithKeyboardBehavior.InputKeyboard.wasd);
+            GameParameter.SetPlayerInput(GameManager.Players.player1, MoveWithKeyboardBehavior.InputKeyboard.arrows);
+            GameParameter.SetPlayerInput(GameManager.Players.player2, MoveWithKeyboardBehavior.InputKeyboard.wasd);
         }
         
     }

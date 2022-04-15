@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -20,7 +18,6 @@ public class GameManager : MonoBehaviour
     public static string AUDIO_TAG      = "Audio";
     public static string RING_TAG       = "Ring";
     public static string CONTROLLER_TAG = "GameController";
-    public static string PAUSE_BUTTON_TAG = "PauseButton";
 
     private GameObject[] playerList;
     private int[] scoreList;
@@ -48,6 +45,60 @@ public class GameManager : MonoBehaviour
             EndGame();
             DisplayEndScreen();
         }
+    }
+
+    // To start the game
+    public void StartGame()
+    {
+        timer.SetTimer(GameParameter.gameTimer);
+        timer.Awake();
+        GameObject.Find("Pause Button").GetComponent<Button>().interactable = true;
+        this.GetComponentInChildren<GhostSheepBehavior>().StartGhostSheep();
+        playerList = GameObject.FindGameObjectsWithTag(PLAYER_TAG);
+        for (int i = 0; i < playerList.Length; ++i)
+        {
+            playerList[i].GetComponent<MoveWithKeyboardBehavior>()
+                .SetInputKeyboard(GameParameter.inputs[i]);
+
+            playerList[i].GetComponent<CelluloAgent>()
+                .SetVisualEffect(VisualEffect.VisualEffectConstAll, GameParameter.colors[i], 255);
+        }
+        scoreList = new int[playerList.Length];
+        isGameOn = true;
+    }
+
+    // To pause the game (will be usefull later since different behavior than EndGame)
+    public void PauseGame()
+    {
+        timer.PauseTimer();
+        isGameOn = false;
+        DisplayPauseScreen();
+    }
+
+    // To end the game
+    private void EndGame()
+    {
+        isGameOn = false;
+        GameObject.Find("Pause Button").GetComponent<Button>().interactable = false;
+    }
+
+    // To go back to the main menu
+    public void QuitGame()
+    {
+        EndGame();
+        timer.resetTimer();
+        // To reset the music
+        GameObject.FindGameObjectWithTag(AUDIO_TAG).GetComponent<Audio>().KillMusic();
+        GameParameter.ResetGameParameter();
+    }
+
+    // To resume the game
+    public void ResumeGame()
+    {
+        timer.ResumeTimer();
+        this.GetComponentInChildren<GhostSheepBehavior>().StartGhostSheep();
+        isGameOn = true;
+        DisplayGameUI();
     }
 
     public bool HasGameEnded()
@@ -115,58 +166,6 @@ public class GameManager : MonoBehaviour
     public void SwitchAudio()
     {
         gameAudio.SwitchAudioMode();
-    }
-
-    public void StartGame()
-    {
-        timer.SetTimer(GameParameter.gameTimer);
-        timer.Awake();
-        GameObject.Find("Pause Button").GetComponent<Button>().interactable = true;
-        this.GetComponentInChildren<GhostSheepBehavior>().StartGhostSheep();
-        playerList = GameObject.FindGameObjectsWithTag(PLAYER_TAG);
-        for (int i = 0; i < playerList.Length; ++i)
-        {
-            playerList[i].GetComponent<MoveWithKeyboardBehavior>()
-                .SetInputKeyboard(GameParameter.inputs[i]);
-
-            playerList[i].GetComponent<CelluloAgent>()
-                .SetVisualEffect(VisualEffect.VisualEffectConstAll, GameParameter.colors[i], 255);
-        }
-        scoreList = new int[playerList.Length];
-        isGameOn = true;
-    }
-
-    // To pause the game (will be usefull later since different behavior than EndGame)
-    public void PauseGame()
-    {
-        timer.PauseTimer();
-        isGameOn = false;
-        DisplayPauseScreen();
-    }
-
-    // To end the game
-    private void EndGame()
-    {
-        isGameOn = false;
-        GameObject.Find("Pause Button").GetComponent<Button>().interactable = false;
-    }
-
-    // To go back to the main menu
-    public void QuitGame()
-    {
-        EndGame();
-        timer.resetTimer();
-        // To reset the music
-        GameObject.FindGameObjectWithTag("Audio").GetComponent<Audio>().KillMusic();
-    }
-
-    // To resume the game
-    public void ResumeGame()
-    {
-        timer.ResumeTimer();
-        this.GetComponentInChildren<GhostSheepBehavior>().StartGhostSheep();
-        isGameOn = true;
-        DisplayGameUI();
     }
 
     // To get if the game is running of not

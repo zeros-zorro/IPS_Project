@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -7,6 +7,7 @@ public class WinnerText : MonoBehaviour
 {
     private TextMeshProUGUI GUI;
     private GameManager game;
+    private bool winnerWasDisplayed = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,23 +18,21 @@ public class WinnerText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (game.HasGameEnded())
+        if (game.HasGameEnded() && !winnerWasDisplayed)
         {
             List<GameManager.Players> winner = game.getWinner();
             if (winner.Count == 1)
             {
-                GUI.text = winner[0] == GameManager.Players.player1
-                    ? "TEAM BLUE"
-                    : "TEAM PURPLE";
-                GUI.color = winner[0] == GameManager.Players.player1
-                    ? Color.blue
-                    : Color.magenta;
+                Color color = GameParameter.colors[(int)winner[0]];
+                GUI.text = "TEAM " + GameParameter.getColorName(color);
+                GUI.color = color;
 
             } else if (winner.Count == 2)
             {
                 GUI.text = "DRAW";
-                GUI.color = Color.cyan;
+                GUI.color = Color.black;
             }
+            winnerWasDisplayed = true;
         }
     }
 }

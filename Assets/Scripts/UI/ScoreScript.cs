@@ -9,6 +9,7 @@ public class ScoreScript : MonoBehaviour
     private int[] scoreList;
     public TextMeshProUGUI[] GUI;
     private GameManager game;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,9 +20,7 @@ public class ScoreScript : MonoBehaviour
         {
             GUI[i].text = "0" + scoreList[i].ToString();
             GUI[GameManager.DEFAULT_NUMBER_OF_PLAYERS - i - 1].color =
-                (i == (int)GameManager.Players.player1)
-                    ? new Color(1f, 0f, 1f, 1f)
-                    : new Color(0f, 0f, 1f, 1f);
+                GameParameter.colors[GameManager.DEFAULT_NUMBER_OF_PLAYERS - i - 1];
         }
         
     }
