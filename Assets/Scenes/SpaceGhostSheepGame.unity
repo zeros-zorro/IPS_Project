@@ -3751,6 +3751,7 @@ GameObject:
   m_Component:
   - component: {fileID: 911158490}
   - component: {fileID: 911158489}
+  - component: {fileID: 911158491}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -3788,6 +3789,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &911158491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911158488}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a39c6b982124d8999694cf8135e2d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obj: {fileID: 919132149155446097, guid: d589205b18d4c7d46bfb15486f3d4bfd, type: 3}
+  center: {x: 0, y: 0, z: 0}
+  mapSize: {x: 20, y: 0, z: 20}
 --- !u!1 &912809630
 GameObject:
   m_ObjectHideFlags: 0
@@ -6584,6 +6600,10 @@ PrefabInstance:
     - target: {fileID: 1300460603369726360, guid: 6f5f6d7624c2ce5cc8896e584e30f1c5, type: 3}
       propertyPath: m_Color.a
       value: 0.19215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 1300460603369726367, guid: 6f5f6d7624c2ce5cc8896e584e30f1c5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1300460603399572452, guid: 6f5f6d7624c2ce5cc8896e584e30f1c5, type: 3}
       propertyPath: m_AnchorMax.y
