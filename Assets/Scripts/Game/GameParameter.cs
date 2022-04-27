@@ -41,12 +41,19 @@ public static class GameParameter
 
     public static void PlayerNextColor(GameManager.Players player)
     {
-        colors[(int)player] = colorList[(Array.IndexOf(colorList, colors[(int)player]) + 1) % colorList.Length];
+        Color temp = colorList[(Array.IndexOf(colorList, colors[(int)player]) + 1) % colorList.Length];
+        colors[(int)player] = colors[((int) player + 1) % GameManager.DEFAULT_NUMBER_OF_PLAYERS] == temp //so the player don't have the same color
+                                ? colorList[(Array.IndexOf(colorList, colors[(int)player]) + 2) % colorList.Length]
+                                : temp;
+
     }
 
     public static void PlayerPreviousColor(GameManager.Players player)
     {
-        colors[(int)player] = colorList[mod((Array.IndexOf(colorList, colors[(int)player]) - 1), colorList.Length)];
+        Color temp = colorList[mod(Array.IndexOf(colorList, colors[(int)player]) - 1, colorList.Length)];
+        colors[(int)player] = colors[((int)player + 1) % GameManager.DEFAULT_NUMBER_OF_PLAYERS] == temp //so the player don't have the same color
+                                ? colorList[mod(Array.IndexOf(colorList, colors[(int)player]) - 2, colorList.Length)]
+                                : temp;
     }
 
     // To reset the game parameters
