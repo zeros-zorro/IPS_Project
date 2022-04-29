@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public static string AUDIO_TAG      = "Audio";
     public static string RING_TAG       = "Ring";
     public static string CONTROLLER_TAG = "GameController";
+    public static string GEM_TAG        = "Gem";
 
     private GameObject[] playerList;
     private int[] scoreList;
@@ -118,7 +119,10 @@ public class GameManager : MonoBehaviour
                 case "Canvas UI":
                     CanvasPlayerGUI.enabled = true;
                     break;
-                default:
+                case "MenuCanvasRight":
+                    CanvasPlayerGUI.enabled = true;
+                break;
+            default:
                     CanvasPlayerGUI.enabled = false;
                     break;
             }
@@ -174,16 +178,16 @@ public class GameManager : MonoBehaviour
         return isGameOn;
     }
 
-    public void addScoreToPlayer(GameObject player)
+    public void addScoreToPlayer(GameObject player, int points)
     {
-        int playerNumber = player.GetComponent<MoveWithKeyboardBehavior>().getPlayerNumber();
-        scoreList[playerNumber]++;
+        int playerNumber = player.GetComponent<PlayerBehavior>().GetPlayerNumber();
+        scoreList[playerNumber] += points;
     }
 
-    public void subScoreToPlayer(GameObject player)
+    public void subScoreToPlayer(GameObject player, int points)
     {
-        int playerNumber = player.GetComponent<MoveWithKeyboardBehavior>().getPlayerNumber();
-        scoreList[playerNumber]--;
+        int playerNumber = player.GetComponent<PlayerBehavior>().GetPlayerNumber();
+        scoreList[playerNumber] -= points;
     }
 
     public int getScorePlayer(Players p)

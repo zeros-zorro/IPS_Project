@@ -4,6 +4,8 @@ using UnityEngine;
 // Static class to store the game parameters
 public static class GameParameter
 {
+    // Default amount of point earned/lost for the gem
+    public static int gemPointValue = 2;
     // Default timer
     public static float gameTimer = 2f; 
     // Default player inputs

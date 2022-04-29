@@ -12,6 +12,7 @@ TagManager:
   - WinnerScreen
   - GameUI
   - Audio
+  - Gem
   layers:
   - Default
   - TransparentFX

@@ -137,7 +137,7 @@ public class GhostSheepBehavior : AgentBehaviour
             if (collision.transform.gameObject.CompareTag(GameManager.PLAYER_TAG))
             {
                 audioGS.loosePointSound();
-                GameObject.FindGameObjectWithTag(GameManager.CONTROLLER_TAG).GetComponent<GameManager>().subScoreToPlayer(collision.transform.gameObject);
+                GameObject.FindGameObjectWithTag(GameManager.CONTROLLER_TAG).GetComponent<GameManager>().subScoreToPlayer(collision.transform.gameObject, 1);
                 Debug.Log("Collided with a ghost");
             }
         }

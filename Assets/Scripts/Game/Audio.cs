@@ -100,4 +100,28 @@ public class Audio : MonoBehaviour
             m_MyAudioSource[4].Play();
         }
     }
+
+    public void gemAppearedSound()
+    {
+        if (isMusicPlaying)
+        {
+            m_MyAudioSource[5].Play();
+        }
+    }
+
+    public void gemEarnedSound()
+    {
+        if (isMusicPlaying)
+        {
+            m_MyAudioSource[6].Play();
+        }
+    }
+
+    public void powerOfGemUsedSound()
+    {
+        if (isMusicPlaying)
+        {
+            m_MyAudioSource[7].Play();
+        }
+    }
 }

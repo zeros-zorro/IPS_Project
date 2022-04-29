@@ -11,12 +11,11 @@ public class MoveWithKeyboardBehavior : AgentBehaviour
         wasd = 1
     }
 
-    
+
     public static string HORIZONTAL = "Horizontal";
     public static string VERTICAL = "Vertical";
     public static string HORIZONTAL_WASD = "HorizontalWASD";
     public static string VERTICAL_WASD = "VerticalWASD";
-    public GameManager.Players playerNumber;
 
     private GameManager game;
     private InputKeyboard inputKeyboard;
@@ -26,7 +25,6 @@ public class MoveWithKeyboardBehavior : AgentBehaviour
     public void Start()
     {
         game = this.GetComponentInParent<GameManager>();
-        gameObject.tag = GameManager.PLAYER_TAG;
     }
 
     // This should be set by the game manager on start
@@ -53,9 +51,4 @@ public class MoveWithKeyboardBehavior : AgentBehaviour
         return steering;
     }
 
-    // To retrieve the player number
-    public int getPlayerNumber()
-    {
-        return (int) playerNumber;
-    }
 }

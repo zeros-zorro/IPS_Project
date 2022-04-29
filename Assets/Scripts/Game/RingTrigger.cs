@@ -21,10 +21,10 @@ public class RingTrigger : MonoBehaviour
         }
     }
 
-    void FindClosestPlayerAndScore() {
+    private void FindClosestPlayerAndScore() {
         GameObject sheep = GameObject.FindGameObjectWithTag(GameManager.SHEEP_TAG);
         GameObject closestPlayer = sheep.GetComponent<GhostSheepBehavior>().FindClosestPlayer();
         Debug.Log("Found closest player with tag " + closestPlayer.tag);
-        GameObject.FindGameObjectWithTag(GameManager.CONTROLLER_TAG).GetComponent<GameManager>().addScoreToPlayer(closestPlayer);
+        GameObject.FindGameObjectWithTag(GameManager.CONTROLLER_TAG).GetComponent<GameManager>().addScoreToPlayer(closestPlayer, 1);
     }
 }
