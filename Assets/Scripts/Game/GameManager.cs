@@ -159,6 +159,9 @@ public class GameManager : MonoBehaviour
                 case "Canvas UI":
                     CanvasPlayerGUI.enabled = true;
                     break;
+                case "MenuCanvasRight":
+                    CanvasPlayerGUI.enabled = true;
+                    break;
                 default:
                     CanvasPlayerGUI.enabled = false;
                     break;
