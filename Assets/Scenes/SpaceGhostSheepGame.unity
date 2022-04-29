@@ -1978,7 +1978,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   center: {x: 14.5, y: 0.5, z: -10}
   mapSize: {x: 27, y: 0, z: 17}
-  invokeTimeDelay: 2
+  invokeTimeDelay: 5
 --- !u!65 &408745714
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6816,6 +6816,10 @@ PrefabInstance:
     - target: {fileID: 1300460603519264908, guid: 6f5f6d7624c2ce5cc8896e584e30f1c5, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1300460603572157312, guid: 6f5f6d7624c2ce5cc8896e584e30f1c5, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1300460603572157317, guid: 6f5f6d7624c2ce5cc8896e584e30f1c5, type: 3}
       propertyPath: m_IsActive
