@@ -7,7 +7,9 @@ public static class GameParameter
     // Default amount of point earned/lost for the gem
     public static int gemPointValue = 2;
     // Default timer
-    public static float gameTimer = 2f; 
+    public static float gameTimer = 2f;
+    // Default gem cooldown
+    public static float gemCooldown = 5f;
     // Default player inputs
     public static MoveWithKeyboardBehavior.InputKeyboard[] inputs = { MoveWithKeyboardBehavior.InputKeyboard.wasd,
                                                                         MoveWithKeyboardBehavior.InputKeyboard.arrows };

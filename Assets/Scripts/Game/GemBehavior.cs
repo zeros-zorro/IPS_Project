@@ -6,8 +6,8 @@ public class GemBehavior : MonoBehaviour
 {
     public Vector3 center;
     public Vector3 mapSize;
-    public float invokeTimeDelay = 5.0f;
 
+    private float invokeTimeDelay = GameParameter.gemCooldown;
     private GameManager game;
     private bool isGemDisplayed = false;
     private Audio audioGem;

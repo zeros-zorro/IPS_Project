@@ -1977,8 +1977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   center: {x: 14.5, y: 0.5, z: -10}
-  mapSize: {x: 27, y: 0, z: 17}
-  invokeTimeDelay: 5
+  mapSize: {x: 26, y: 0, z: 17}
 --- !u!65 &408745714
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3014,7 +3013,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &695546943
 GameObject:
   m_ObjectHideFlags: 0

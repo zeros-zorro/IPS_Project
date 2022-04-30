@@ -7583,7 +7583,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 492.7257, y: 304.8439}
+  m_SizeDelta: {x: 665.695, y: 304.844}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1643823213
 MonoBehaviour:
@@ -7605,14 +7605,26 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "There are three robots: red, blue and green. The red robot belongs to
+  m_text: 'There are three robots: red, blue and green. The red robot belongs to
     the first player and can be moved using the mouse (click and drag). The blue
     robot belongs to the second player and can be moved using the keyboard wasd.
-    Your goal is to get as much points as possible.\nTo earn a point you should put
-    the green robot (sheep) in the green ring. The player who's closest to the sheep
-    at the time will earn the point.\nRandomly during the game, the sheep turn into
-    a monster that chases you and if it catches you, you will lose a point. \nThe
-    game ends in 2 minutes.\nENJOOOOOOOY!"
+    Your goal is to get as much points as possible.
+
+    To earn a point you should
+    put the green robot (sheep) in the green ring. The player who''s closest to the
+    sheep at the time will earn the point.
+
+    Randomly during the game, the sheep
+    turn into a monster that chases you and if it catches you, you will lose a point.
+
+    Gems
+    will appear randomly in the map every X seconds, once collected, you can steal
+    2 points from the other player by colliding with him.
+
+    The game ends in 2
+    minutes.
+
+    ENJOOOOOOOY!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0bc1de604b91fb1f4bc8d2beeefe2c74, type: 2}
   m_sharedMaterial: {fileID: 9024649423926858605, guid: 0bc1de604b91fb1f4bc8d2beeefe2c74, type: 2}
