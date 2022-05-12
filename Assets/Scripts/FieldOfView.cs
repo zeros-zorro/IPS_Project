@@ -11,7 +11,13 @@ public class FieldOfView : MonoBehaviour
     public LayerMask targetMask;
     public LayerMask obstacleMask;
 
+    [HideInInspector]
     public List<Transform> visibleTargets = new List<Transform>();
+
+    public float meshResolution;
+
+    public MeshFilter viewMeshFilter;
+    Mesh viewMesh;
 
     IEnumerator FindTargetsWithDelay(float delay)
     {
@@ -43,6 +49,59 @@ public class FieldOfView : MonoBehaviour
         }
     }
 
+    void DrawFieldOfView()
+    {
+        int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
+        float stepAngleSize = viewAngle / stepCount;
+        List<Vector3> viewPoints = new List<Vector3>();
+
+        for(int i = 0; i <= stepCount; i++)
+        {
+            float angle = transform.eulerAngles.y - viewAngle / 2 + stepAngleSize * i;
+
+            ViewCastInfo newViewCast = ViewCast(angle);
+
+            viewPoints.Add(newViewCast.points);
+        }
+
+        int vertexCount = viewPoints.Count + 1;
+        Vector3[] vertices = new Vector3[vertexCount];
+        int[] triangles = new int[(vertexCount - 2) * 3];
+
+        vertices[0] = Vector3.zero;
+        for (int i = 0; i < vertexCount - 1; i++)
+        {
+            vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]);
+
+            if(i < vertexCount - 2)
+            {
+                triangles[i * 3] = 0;
+                triangles[i * 3 + 1] = i + 1;
+                triangles[i * 3 + 2] = i + 2;
+            }
+        }
+
+        viewMesh.Clear();
+        viewMesh.vertices = vertices;
+        viewMesh.triangles = triangles;
+        viewMesh.RecalculateNormals();
+
+    }
+
+    ViewCastInfo ViewCast(float globalAngle)
+    {
+        Vector3 dir = DirFromAngle(globalAngle, true);
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, dir, out hit, viewRadius, obstacleMask))
+        {
+            return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
+        }
+        else
+        {
+            return new ViewCastInfo(false, transform.position + dir * viewRadius, viewRadius , globalAngle);
+        }
+    }
+
     public Vector3 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
     {
         if (!angleIsGlobal)
@@ -53,15 +112,35 @@ public class FieldOfView : MonoBehaviour
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
+    public struct ViewCastInfo
+    {
+        public bool hit;
+        public Vector3 points;
+        public float dst;
+        public float angles;
+
+        public ViewCastInfo(bool _hit, Vector3 _points, float _dst, float _angles)
+        {
+            hit = _hit;
+            points = _points;
+            dst = _dst;
+            angles = _angles;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        viewMesh = new Mesh();
+        viewMesh.name = "View Mesh";
+        viewMeshFilter.mesh = viewMesh;
+
         StartCoroutine("FindTargetsWithDelay", .2f);
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        
+        DrawFieldOfView();
     }
 }
