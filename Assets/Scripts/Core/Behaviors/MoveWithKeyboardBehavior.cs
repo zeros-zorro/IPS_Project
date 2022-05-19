@@ -51,4 +51,11 @@ public class MoveWithKeyboardBehavior : AgentBehaviour
         return steering;
     }
 
+    //implement the cellulo long touch
+    public override void OnCelluloLongTouch(int key) {
+        if (!game.GetGameRunningStatus())
+        {
+            game.StartGame();
+        }
+    }
 }
