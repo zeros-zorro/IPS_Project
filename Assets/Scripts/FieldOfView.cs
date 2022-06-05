@@ -11,13 +11,15 @@ public class FieldOfView : MonoBehaviour
     public LayerMask targetMask;
     public LayerMask obstacleMask;
 
-    [HideInInspector]
+
     public List<Transform> visibleTargets = new List<Transform>();
 
     public float meshResolution;
 
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
+
+    public WatcherMove watcher;
 
     IEnumerator FindTargetsWithDelay(float delay)
     {
@@ -31,6 +33,7 @@ public class FieldOfView : MonoBehaviour
     void FindVisibleTargets()
     {
         visibleTargets.Clear();
+        watcher.target = null;
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
         for (int i = 0; i < targetsInViewRadius.Length; i++)
@@ -44,6 +47,7 @@ public class FieldOfView : MonoBehaviour
                 if(!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
                     visibleTargets.Add(target);
+                    watcher.target = target;
                 }
             }
         }
