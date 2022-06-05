@@ -42,9 +42,4 @@ public class WatcherMove : AgentBehaviour
         }
         return steering;
     }
-
-    void SetTarget(Transform transform)
-    {
-        this.target = transform;
-    }
 }
