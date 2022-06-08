@@ -92,4 +92,10 @@ public class Timer : MonoBehaviour
         minutes = 0f;
         seconds = 0f;
     }
+
+    // To get the elapsed time in seconds
+    public int GetElapsedTime()
+    {
+        return (int) (minutes * 60 + seconds);
+    }
 }

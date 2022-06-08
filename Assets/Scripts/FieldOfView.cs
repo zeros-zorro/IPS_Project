@@ -19,6 +19,8 @@ public class FieldOfView : MonoBehaviour
     public MeshFilter viewMeshFilter;
     Mesh viewMesh;
 
+    private GuardBehavior guard;
+
     IEnumerator FindTargetsWithDelay(float delay)
     {
         while (true)
@@ -131,11 +133,31 @@ public class FieldOfView : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        guard = this.GetComponentInParent<GuardBehavior>();
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
 
         StartCoroutine("FindTargetsWithDelay", .2f);
+    }
+
+    private void Update()
+    {
+        if (visibleTargets.Count > 0 && guard.GetGuardState() != GuardBehavior.WatcherState.PURSUE)
+        {
+            CancelInvoke();
+            guard.SetGuardState(GuardBehavior.WatcherState.PURSUE);
+        } else if (visibleTargets.Count == 0 && guard.GetGuardState() == GuardBehavior.WatcherState.PURSUE)
+        {
+            CancelInvoke();
+            guard.SetGuardState(GuardBehavior.WatcherState.SEARCH);
+            Invoke("ResetGuard", 3.5f);
+        }
+    }
+
+    private void ResetGuard()
+    {
+        guard.ResetGuardState();
     }
 
     // Update is called once per frame

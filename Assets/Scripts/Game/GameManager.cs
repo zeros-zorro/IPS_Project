@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     }
     public static int DEFAULT_NUMBER_OF_PLAYERS = 2;
     public static string SHEEP_TAG      = "Sheep";
+    public static string GUARD_TAG      = "Guard";
     public static string GHOST_TAG      = "Ghost";
     public static string PLAYER_TAG     = "Player";
     public static string SCORE_TAG      = "Score";
@@ -19,6 +20,8 @@ public class GameManager : MonoBehaviour
     public static string RING_TAG       = "Ring";
     public static string CONTROLLER_TAG = "GameController";
     public static string GEM_TAG        = "Gem";
+    public static string END_TAG = "EndPoint";
+
 
     private GameObject[] playerList;
     private int[] scoreList;
@@ -54,7 +57,6 @@ public class GameManager : MonoBehaviour
         timer.SetTimer(GameParameter.gameTimer);
         timer.Awake();
         GameObject.Find("Pause Button").GetComponent<Button>().interactable = true;
-        this.GetComponentInChildren<GhostSheepBehavior>().StartGhostSheep();
         playerList = GameObject.FindGameObjectsWithTag(PLAYER_TAG);
         for (int i = 0; i < playerList.Length; ++i)
         {
@@ -97,7 +99,6 @@ public class GameManager : MonoBehaviour
     public void ResumeGame()
     {
         timer.ResumeTimer();
-        this.GetComponentInChildren<GhostSheepBehavior>().StartGhostSheep();
         isGameOn = true;
         DisplayGameUI();
     }
@@ -146,6 +147,40 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // To display the game over screen because the player got catched
+    private void DisplayGameOver1Screen()
+    {
+        foreach (Canvas CanvasPlayerGUI in CanvasPlayerGUIs)
+        {
+            switch (CanvasPlayerGUI.name)
+            {
+                case "Canvas GameOver1":
+                    CanvasPlayerGUI.enabled = true;
+                    break;
+                default:
+                    CanvasPlayerGUI.enabled = false;
+                    break;
+            }
+        }
+    }
+
+    // To display the game over screen because the player got no more time
+    private void DisplayGameOver2Screen()
+    {
+        foreach (Canvas CanvasPlayerGUI in CanvasPlayerGUIs)
+        {
+            switch (CanvasPlayerGUI.name)
+            {
+                case "Canvas GameOver2":
+                    CanvasPlayerGUI.enabled = true;
+                    break;
+                default:
+                    CanvasPlayerGUI.enabled = false;
+                    break;
+            }
+        }
+    }
+
     // To display the end screen with the winner(s) name
     private void DisplayPauseScreen()
     {
@@ -185,6 +220,22 @@ public class GameManager : MonoBehaviour
     {
         int playerNumber = player.GetComponent<PlayerBehavior>().GetPlayerNumber();
         scoreList[playerNumber] += points;
+    }
+
+    public void StageClearedAction()
+    {
+        GameParameter.SetStageClearingTime(timer.GetElapsedTime());
+        timer.resetTimer();
+        EndGame();
+        DisplayEndScreen();
+    }
+
+    public void GuardCaughtPlayer()
+    {
+        GameParameter.SetStageClearingTime(-1);
+        timer.resetTimer();
+        EndGame();
+        DisplayGameOver1Screen();
     }
 
     public void subScoreToPlayer(GameObject player, int points)

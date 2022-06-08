@@ -13,6 +13,8 @@ TagManager:
   - GameUI
   - Audio
   - Gem
+  - EndPoint
+  - Guard
   layers:
   - Default
   - TransparentFX

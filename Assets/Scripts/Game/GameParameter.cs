@@ -21,11 +21,21 @@ public static class GameParameter
     private static String[] colorNames = { "black", "blue", "cyan",
                                             "green", "grey", "purple",
                                             "red", "white", "yellow" };
+    // Default clearing time for stages in seconds
+    private static float[] stageClearingTime = { 0, 0, 0, 0, 0 };
+
+    private static int currentStage = 0; //from 1 thru 5, 0 by default
+
 
     // Our own mod function since % with negative integer does not work
     private static int mod(int x, int m)
     {
         return (x % m + m) % m;
+    }
+
+    public static void SetStageClearingTime(float time)
+    {
+        stageClearingTime[currentStage - 1] = time;
     }
 
     public static void SetGameTimer(float timer)
@@ -45,19 +55,21 @@ public static class GameParameter
 
     public static void PlayerNextColor(GameManager.Players player)
     {
-        Color temp = colorList[(Array.IndexOf(colorList, colors[(int)player]) + 1) % colorList.Length];
-        colors[(int)player] = colors[((int) player + 1) % GameManager.DEFAULT_NUMBER_OF_PLAYERS] == temp //so the player don't have the same color
-                                ? colorList[(Array.IndexOf(colorList, colors[(int)player]) + 2) % colorList.Length]
-                                : temp;
+        colors[(int)player] = colorList[(Array.IndexOf(colorList, colors[(int)player]) + 1) % colorList.Length];
+        //Color temp = colorList[(Array.IndexOf(colorList, colors[(int)player]) + 1) % colorList.Length];
+        //colors[(int)player] = colors[((int) player + 1) % GameManager.DEFAULT_NUMBER_OF_PLAYERS] == temp //so the player don't have the same color
+        //? colorList[(Array.IndexOf(colorList, colors[(int)player]) + 2) % colorList.Length]
+        //: temp;
 
     }
 
     public static void PlayerPreviousColor(GameManager.Players player)
     {
-        Color temp = colorList[mod(Array.IndexOf(colorList, colors[(int)player]) - 1, colorList.Length)];
-        colors[(int)player] = colors[((int)player + 1) % GameManager.DEFAULT_NUMBER_OF_PLAYERS] == temp //so the player don't have the same color
-                                ? colorList[mod(Array.IndexOf(colorList, colors[(int)player]) - 2, colorList.Length)]
-                                : temp;
+        colors[(int)player] = colorList[mod(Array.IndexOf(colorList, colors[(int)player]) - 1, colorList.Length)];
+        //Color temp = colorList[mod(Array.IndexOf(colorList, colors[(int)player]) - 1, colorList.Length)];
+        //colors[(int)player] = colors[((int)player + 1) % GameManager.DEFAULT_NUMBER_OF_PLAYERS] == temp //so the player don't have the same color
+        //? colorList[mod(Array.IndexOf(colorList, colors[(int)player]) - 2, colorList.Length)]
+        //: temp;
     }
 
     // To reset the game parameters
@@ -70,5 +82,27 @@ public static class GameParameter
 
         colors[0] = Color.blue;
         colors[1] = Color.magenta;
+
+        for (int i = 0; i < stageClearingTime.Length; ++i)
+        {
+            stageClearingTime[i] = 0;
+        }
+
+        currentStage = 0;
+    }
+
+    public static int GetCurrentStage()
+    {
+        return currentStage;
+    }
+
+    public static void SetCurrentStage(int stage)
+    {
+        currentStage = stage;
+    }
+
+    public static void ResetCurrentStage()
+    {
+        currentStage = 0;
     }
 }
