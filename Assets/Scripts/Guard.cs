@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Guard : MonoBehaviour
+public class Guard : AgentBehaviour
 {
 
     public float speed = 5f;
     public float waitTime = 3f;
 
     public Transform pathHolder;
+
+    Vector3 targetWaypoint;
 
     private void Start()
     {
@@ -28,13 +30,14 @@ public class Guard : MonoBehaviour
     {
         transform.position = waypoints[0];
         int targetWaypointIndex = 1;
-        Vector3 targetWaypoint = waypoints[targetWaypointIndex];
+        this.targetWaypoint = waypoints[targetWaypointIndex];
 
         while (true)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, speed * Time.deltaTime);
-            if(transform.position == targetWaypoint)
+            //transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, speed * Time.deltaTime);
+            if(Vector3.Distance(transform.position, targetWaypoint) < 0.05f)
             {
+                Debug.Log("Changed target");
                 targetWaypointIndex = (targetWaypointIndex + 1) % waypoints.Length;
                 targetWaypoint = waypoints[targetWaypointIndex];
                 yield return new WaitForSeconds(waitTime);
@@ -54,5 +57,24 @@ public class Guard : MonoBehaviour
             previousPosition = waypoint.position;
         }
         Gizmos.DrawLine(previousPosition, startPosition);
+    }
+
+    public override Steering GetSteering()
+    {
+        Steering steering = new Steering();
+
+        //TODO: if statement of if the game is running
+        Vector3 direction = targetWaypoint - transform.position;
+        if(Vector3.Distance(transform.position, targetWaypoint) < 0.05f)
+        {
+            steering.linear = Vector3.zero;
+        }
+        else
+        {
+            steering.linear = direction * agent.maxAccel;
+            steering.linear = this.transform.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
+        }
+
+        return steering;
     }
 }
