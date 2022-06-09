@@ -4374,7 +4374,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 1
-  guard: {fileID: 0}
+  guard: {fileID: 931127019}
   speed: 5
   angularThreshold: 10
   rotationSpeed: 10
@@ -4401,6 +4401,7 @@ MonoBehaviour:
   speed: 5
   waitTime: 3
   pathHolder: {fileID: 677958030}
+  targetWaypoint: {x: 0, y: 0, z: 0}
 --- !u!1 &988297877
 GameObject:
   m_ObjectHideFlags: 0

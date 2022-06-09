@@ -10,11 +10,13 @@ public class Guard : AgentBehaviour
 
     public Transform pathHolder;
 
-    Vector3 targetWaypoint;
+    public Vector3 targetWaypoint;
+    private Vector3 nextTargetWaypoint;
+    private Rigidbody rb;
 
     private void Start()
     {
-
+        rb = GetComponent<Rigidbody>();
         Vector3[] waypoints = new Vector3[pathHolder.childCount];
         for(int i = 0; i < waypoints.Length; i++)
         {
@@ -29,17 +31,20 @@ public class Guard : AgentBehaviour
     IEnumerator FollowPath(Vector3[] waypoints)
     {
         transform.position = waypoints[0];
+        //transform.forward = 
         int targetWaypointIndex = 1;
         this.targetWaypoint = waypoints[targetWaypointIndex];
+        this.targetWaypoint = waypoints[targetWaypointIndex + 1];
 
+        yield return new WaitForSeconds(waitTime);
         while (true)
         {
             //transform.position = Vector3.MoveTowards(transform.position, targetWaypoint, speed * Time.deltaTime);
-            if(Vector3.Distance(transform.position, targetWaypoint) < 0.05f)
+            if(isSpeedNull() && isFacingTarget())
             {
-                Debug.Log("Changed target");
                 targetWaypointIndex = (targetWaypointIndex + 1) % waypoints.Length;
                 targetWaypoint = waypoints[targetWaypointIndex];
+                nextTargetWaypoint = waypoints[(targetWaypointIndex + 1) % waypoints.Length];
                 yield return new WaitForSeconds(waitTime);
             }
             yield return null;
@@ -58,7 +63,7 @@ public class Guard : AgentBehaviour
         }
         Gizmos.DrawLine(previousPosition, startPosition);
     }
-
+    /*
     public override Steering GetSteering()
     {
         Steering steering = new Steering();
@@ -76,5 +81,17 @@ public class Guard : AgentBehaviour
         }
 
         return steering;
+    }
+    */
+
+    private bool isSpeedNull()
+    {
+        return (rb.velocity.magnitude < Vector3.kEpsilon);
+    }
+    private bool isFacingTarget()
+    {
+        float angleToTarget = -Vector2.SignedAngle(this.transform.forward, nextTargetWaypoint - this.transform.position);
+        float angularFactor = angleToTarget / 180f;
+        return (Mathf.Abs(angleToTarget) < 10.0f);
     }
 }
