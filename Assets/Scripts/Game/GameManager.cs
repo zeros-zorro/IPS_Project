@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         timer = this.GetComponentInChildren<Timer>();
         CanvasPlayerGUIs = FindObjectsOfType<Canvas>();
         gameAudio = GameObject.FindWithTag(AUDIO_TAG).GetComponent<Audio>();
-        DisplayGameUI();
+        DisplayStartUI();
         GameObject.Find("Pause Button").GetComponent<Button>().interactable = false;
     }
 
@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
                 .SetVisualEffect(VisualEffect.VisualEffectConstAll, GameParameter.colors[i], 255);
         }
         scoreList = new int[playerList.Length];
+        DisplayGameUI();
         isGameOn = true;
     }
 
@@ -90,8 +91,6 @@ public class GameManager : MonoBehaviour
     {
         EndGame();
         timer.resetTimer();
-        // To reset the music
-        GameObject.FindGameObjectWithTag(AUDIO_TAG).GetComponent<Audio>().KillMusic();
         GameParameter.ResetGameParameter();
     }
 
@@ -110,7 +109,7 @@ public class GameManager : MonoBehaviour
             : false;
     }
 
-    // To display the game UI (the scores, the back button, the start button)
+    // To display the game UI (the scores, the back button)
     private void DisplayGameUI()
     {
         foreach (Canvas CanvasPlayerGUI in CanvasPlayerGUIs)
@@ -124,6 +123,26 @@ public class GameManager : MonoBehaviour
                     CanvasPlayerGUI.enabled = true;
                 break;
             default:
+                    CanvasPlayerGUI.enabled = false;
+                    break;
+            }
+        }
+    }
+
+    // To display the game UI (the scores, the back button)
+    private void DisplayStartUI()
+    {
+        foreach (Canvas CanvasPlayerGUI in CanvasPlayerGUIs)
+        {
+            switch (CanvasPlayerGUI.name)
+            {
+                case "Canvas Start":
+                    CanvasPlayerGUI.enabled = true;
+                    break;
+                case "MenuCanvasRight":
+                    CanvasPlayerGUI.enabled = true;
+                    break;
+                default:
                     CanvasPlayerGUI.enabled = false;
                     break;
             }

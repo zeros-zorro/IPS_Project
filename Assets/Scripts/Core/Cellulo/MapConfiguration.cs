@@ -29,7 +29,7 @@ public class MapConfiguration : MonoBehaviour
     }
     public void UpdateParameters(){
         UpdatePaperSize();
-        UpdateCelluloUnityScale();
+        //UpdateCelluloUnityScale();
         UpdatePaperOrigin();
     }
     public void FlipXAndY(){
