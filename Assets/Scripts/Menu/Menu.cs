@@ -7,7 +7,7 @@ public class Menu : MonoBehaviour
 {
     public void PlayGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(2);
     }
 
     public void PlayStage(int stage)
@@ -35,14 +35,19 @@ public class Menu : MonoBehaviour
 
     public void BackToStageSelectionMenu()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
         GameParameter.ResetCurrentStage();
     }
 
     public void BackToMainMenu()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
         // To reset the music
         GameObject.FindGameObjectWithTag(GameManager.AUDIO_TAG).GetComponent<Audio>().KillMusic();
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(1);
     }
 }
