@@ -41,34 +41,17 @@ public class Guard : AgentBehaviour
 }
     }
     private void OnDrawGizmos()
-{
-    Vector3 startPosition = pathHolder.GetChild(0).position;
-    Vector3 previousPosition = startPosition;
-    foreach (Transform waypoint in pathHolder)
     {
-        Gizmos.DrawSphere(waypoint.position, .3f);
-        Gizmos.DrawLine(previousPosition, waypoint.position);
-        previousPosition = waypoint.position;
+        Vector3 startPosition = pathHolder.GetChild(0).position;
+        Vector3 previousPosition = startPosition;
+        foreach (Transform waypoint in pathHolder)
+        {
+            Gizmos.DrawSphere(waypoint.position, .3f);
+            Gizmos.DrawLine(previousPosition, waypoint.position);
+            previousPosition = waypoint.position;
+        }
+        Gizmos.DrawLine(previousPosition, startPosition);
     }
-    Gizmos.DrawLine(previousPosition, startPosition);
-}
-    /*
-public override Steering GetSteering()
-{
-    Steering steering = new Steering();
-    //TODO: if statement of if the game is running
-    Vector3 direction = targetWaypoint - transform.position;
-    if (Vector3.Distance(transform.position, targetWaypoint) < 0.1f)
-    {
-        steering.linear = Vector3.zero;
-    }
-    else
-    {
-        steering.linear = direction * agent.maxAccel;
-        steering.linear = this.transform.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
-    }
-    return steering;
-}
-    */
+
 }
 
