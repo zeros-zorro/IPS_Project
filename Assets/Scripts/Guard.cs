@@ -27,7 +27,6 @@ public class Guard : AgentBehaviour
         {
             if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.05f)
             {
-                Debug.Log("Changed target");
                 targetWaypointIndex = (targetWaypointIndex + 1) % waypoints.Length;
                 targetWaypoint = waypoints[targetWaypointIndex];
                 yield return new WaitForSeconds(waitTime);
