@@ -9,13 +9,10 @@ public class Guard : AgentBehaviour
     public Transform targetWaypoint;
     private void Start()
     {
-        //Vector3[] waypoints = new Vector3[pathHolder.childCount];
         Transform[] waypoints = new Transform[pathHolder.childCount];
         for (int i = 0; i < waypoints.Length; i++)
         {
-            //waypoints[i] = pathHolder.GetChild(i).position;
             waypoints[i] = pathHolder.GetChild(i);
-            //waypoints[i] = new Vector3(waypoints[i].x, transform.position.y, waypoints[i].z);
 
         }
         StartCoroutine(FollowPath(waypoints));
@@ -23,10 +20,8 @@ public class Guard : AgentBehaviour
     }
     IEnumerator FollowPath(Transform[] waypoints)
     {
-        //transform.position = waypoints[0];
         transform.position = waypoints[0].position;
         int targetWaypointIndex = 1;
-        //this.targetWaypoint = waypoints[targetWaypointIndex];
         this.targetWaypoint = waypoints[targetWaypointIndex];
         while (true)
         {
