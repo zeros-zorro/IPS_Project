@@ -98,30 +98,12 @@ public class WatcherMove : AgentBehaviour
 
         if(watcherState == WatcherState.RETURN)
         {
-            Debug.Log("In return");
             targetPosition = new Vector2(targetVector.x, targetVector.z);
         }
         else
         {
-            Debug.Log("In default");
             targetPosition = new Vector2(target.position.x, target.position.z);
         }
-
-        /*
-        switch (watcherState)
-        {
-            case WatcherState.RETURN:
-                Debug.Log("In return");
-                targetPosition = new Vector2(targetVector.x, targetVector.z);
-                break;
-
-            default:
-
-                Debug.Log("In default");
-                targetPosition = new Vector2(target.position.x, target.position.z);
-                break;
-        }
-        */
 
         float angleToTarget = -Vector2.SignedAngle(forward, targetPosition - position);
         float angularFactor = angleToTarget / 180f;
