@@ -22,15 +22,13 @@ public class GuardBehavior : AgentBehaviour
 
     public GuardPath guardPath;
 
-    public FieldOfView fov;
-
     public float speed = 10.0f;
     public float angularThreshold = 10.0f;
     public float rotationSpeed = 10.0f;
-    public Transform target;
 
     public float minimumAngularFactor = 0.001f;
-    public Transform idlePoint;
+
+    private Transform idlePoint;
 
     public GuardType guardType;
 
@@ -40,6 +38,10 @@ public class GuardBehavior : AgentBehaviour
     private bool doTurn = false;
     private GameManager game;
     private Audio audioGuard;
+
+    private FieldOfView fov;
+
+    private Transform target;
 
     private Vector3 targetVector;
 
@@ -55,6 +57,8 @@ public class GuardBehavior : AgentBehaviour
         state = GuardState.SEARCH;
         targetVector = guardPath.targetWaypoint.position;
         game = this.GetComponentInParent<GameManager>();
+
+        fov = this.GetComponent<FieldOfView>();
 
         cellulo = gameObject.GetComponent<CelluloAgent>();
 

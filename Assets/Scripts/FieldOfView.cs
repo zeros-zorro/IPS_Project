@@ -47,7 +47,6 @@ public class FieldOfView : MonoBehaviour
     {
         visibleTargets.Clear();
         isInFOV = false;
-        //watcher.target = null;
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
         for (int i = 0; i < targetsInViewRadius.Length; i++)
