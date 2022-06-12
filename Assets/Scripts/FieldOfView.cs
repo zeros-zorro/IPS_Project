@@ -23,7 +23,7 @@ public class FieldOfView : MonoBehaviour
 
     void Start()
     {
-        guard = this.GetComponentInParent<GuardBehavior>();
+        guard = this.GetComponent<GuardBehavior>();
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;

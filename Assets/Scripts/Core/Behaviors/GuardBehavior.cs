@@ -169,7 +169,7 @@ public class GuardBehavior : AgentBehaviour
             {
                 steering.angular = agent.maxAngularSpeed / 2;
             }
-            else
+            else if(state != GuardState.IDLE)
             {
                 Vector2 position = new Vector2(this.transform.position.x, this.transform.position.z);
                 Vector2 forward = new Vector2(this.transform.forward.x, this.transform.forward.z);
