@@ -11,13 +11,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menu.unity
     guid: a91e122b5f6fa45d092a61765a28be59
-  - enabled: 0
-    path: Assets/Scenes/SpaceGhostSheepGame.unity
-    guid: bee28742407a64a3d8cf716a3400ab96
   - enabled: 1
     path: Assets/Scenes/Stage_Selection.unity
     guid: c273220efef5543c189f862257a0f55a
   - enabled: 1
     path: Assets/Scenes/SC_Level1.unity
-    guid: d1e01c0f685c153429fcb1b8d1b6836a
+    guid: 372e69eea99205142b45799bca8ffa93
+  - enabled: 1
+    path: Assets/Scenes/SC_Level2.unity
+    guid: d5dbf903c3e304e6cb38fe2a5bc7566d
+  - enabled: 1
+    path: Assets/Scenes/SC_Level3.unity
+    guid: 4ba94cd925490438896e9ed917f99e8f
+  - enabled: 1
+    path: Assets/Scenes/SC_Level4.unity
+    guid: ad0c68cda27644989a58a0d5992b4775
+  - enabled: 1
+    path: Assets/Scenes/SC_Level5.unity
+    guid: 89450a57357ff4118b12eea5f8054a09
   m_configObjects: {}
