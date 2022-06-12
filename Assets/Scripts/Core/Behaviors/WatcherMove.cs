@@ -31,6 +31,7 @@ public class WatcherMove : AgentBehaviour
     private bool collisionBehavior = false;
     private bool doTurn = false;
     private GameManager game;
+    private Audio audioGuard;
 
     public float minimumAngularFactor = 0.001f;
     public Transform idlePoint;
@@ -53,6 +54,8 @@ public class WatcherMove : AgentBehaviour
         guard = gameObject.GetComponent<Guard>();
         cellulo = gameObject.GetComponent<CelluloAgent>();
         fov = gameObject.GetComponent<FieldOfView>();
+        audioGuard = GameObject.FindGameObjectWithTag(GameManager.AUDIO_TAG).GetComponent<Audio>();
+        gameObject.tag = GameManager.GUARD_TAG;
         //targetVector = Vector3.zero;
     }
 
