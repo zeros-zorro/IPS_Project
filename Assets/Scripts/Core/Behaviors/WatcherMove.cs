@@ -6,8 +6,10 @@ using UnityEngine.AI;
 
 public class WatcherMove : AgentBehaviour
 {
-    private Guard guard;
-    private FieldOfView fov;
+    
+    public Guard guard;
+    
+    public FieldOfView fov;
     enum WatcherState
     {
         IDLE,
@@ -51,9 +53,9 @@ public class WatcherMove : AgentBehaviour
         watcherState = WatcherState.SEARCH;
         targetVector = guard.targetWaypoint.position;
         game = this.GetComponentInParent<GameManager>();
-        guard = gameObject.GetComponent<Guard>();
+
         cellulo = gameObject.GetComponent<CelluloAgent>();
-        fov = gameObject.GetComponent<FieldOfView>();
+
         audioGuard = GameObject.FindGameObjectWithTag(GameManager.AUDIO_TAG).GetComponent<Audio>();
         gameObject.tag = GameManager.GUARD_TAG;
         //targetVector = Vector3.zero;
@@ -105,7 +107,7 @@ public class WatcherMove : AgentBehaviour
     }
     public override Steering GetSteering()
     {
-        
+        /*
         if (game.GetGameRunningStatus() && !collisionBehavior)
         {
             Vector2 position = new Vector2(this.transform.position.x, this.transform.position.z);
@@ -142,7 +144,37 @@ public class WatcherMove : AgentBehaviour
         {
             steering = new Steering();
         }
+        */
 
+        Vector2 position = new Vector2(this.transform.position.x, this.transform.position.z);
+        Vector2 forward = new Vector2(this.transform.forward.x, this.transform.forward.z);
+        Vector2 targetPosition;
+
+        if (watcherState == WatcherState.RETURN)
+        {
+            targetPosition = new Vector2(targetVector.x, targetVector.z);
+        }
+        else
+        {
+            targetPosition = new Vector2(target.position.x, target.position.z);
+        }
+
+
+        float angleToTarget = -Vector2.SignedAngle(forward, targetPosition - position);
+        float angularFactor = angleToTarget / 180f;
+
+        steering.angular = Mathf.Sign(angularFactor) * rotationSpeed;
+
+        if (Mathf.Abs(angleToTarget) < angularThreshold)
+        {
+            if (Mathf.Abs(angleToTarget) < angularThreshold / 3)
+            {
+                steering.angular = 0;
+            }
+            steering.linear = Vector3.forward * speed * agent.maxAccel;
+            steering.linear = this.transform.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
+        }
+        print(steering.angular);
 
         //Debug.DrawRay(transform.position, -(transform.position - targetVector), Color.black);
         return steering;
@@ -209,7 +241,7 @@ public class WatcherMove : AgentBehaviour
         collisionBehavior = false;
         if (collision.transform.gameObject.CompareTag(GameManager.PLAYER_TAG))
         {
-            game.GuardCaughtPlayer();
+            //game.GuardCaughtPlayer();
         }
     }
 

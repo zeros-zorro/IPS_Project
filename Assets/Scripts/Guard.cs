@@ -8,17 +8,12 @@ public class Guard : AgentBehaviour
     public Transform pathHolder;
     public Transform targetWaypoint;
 
-    
-    private Audio audioGuard;
-    private GameManager game;
-
     private void Start()
     {
 
         //game = this.GetComponentInParent<CelluloAgent>();
         
-        audioGuard = GameObject.FindGameObjectWithTag(GameManager.AUDIO_TAG).GetComponent<Audio>();
-        gameObject.tag = GameManager.GUARD_TAG;
+        
 
         Transform[] waypoints = new Transform[pathHolder.childCount];
         for (int i = 0; i < waypoints.Length; i++)
