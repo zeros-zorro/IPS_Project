@@ -11,7 +11,7 @@ public class FieldOfView : MonoBehaviour
     public LayerMask targetMask;
     public LayerMask obstacleMask;
 
-    public List<Transform> visibleTargets = new List<Transform>();
+    public Transform target = null;
 
     public float meshResolution;
 
@@ -44,24 +44,24 @@ public class FieldOfView : MonoBehaviour
 
     void FindVisibleTargets()
     {
-        visibleTargets.Clear();
+        target = null;
         isInFOV = false;
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
         for (int i = 0; i < targetsInViewRadius.Length; i++)
         {
-            Transform target = targetsInViewRadius[i].transform;
-            Vector3 dirToTarget = (target.position - transform.position).normalized;
-            if(Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
+            Transform visibleTarget = targetsInViewRadius[i].transform;
+            Vector3 dirToTarget = (visibleTarget.position - transform.position).normalized;
+
+            float angleToTarget = Vector3.Angle(transform.forward, dirToTarget);
+            if(angleToTarget < viewAngle / 2)
             {
-                float dstToTarget = Vector3.Distance(transform.position, target.position);
+                float dstToTarget = Vector3.Distance(transform.position, visibleTarget.position);
 
                 if(!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
-                    visibleTargets.Add(target);
+                    target = visibleTarget;
                     isInFOV = true;
-                    guard.setTarget(target);
-                    print("Changed target, state is = " + guard.GetGuardState());
                 }
             }
         }
@@ -149,14 +149,10 @@ public class FieldOfView : MonoBehaviour
 
     private void Update()
     {
-        if (visibleTargets.Count > 0 && guard.GetGuardState() != GuardState.PURSUE)
+        CancelInvoke();
+
+        if (!isInFOV && guard.GetGuardState() == GuardState.PURSUE)
         {
-            CancelInvoke();
-            guard.SetGuardState(GuardState.PURSUE);
-        } else if (visibleTargets.Count == 0 && guard.GetGuardState() == GuardState.PURSUE)
-        {
-            CancelInvoke();
-            guard.SetGuardState(GuardState.SEARCH);
             Invoke("ResetGuard", 3.5f);
         }
     }
@@ -166,14 +162,18 @@ public class FieldOfView : MonoBehaviour
         guard.ResetGuardState();
     }
 
-    // Update is called once per frame
     void LateUpdate()
     {
         DrawFieldOfView();
     }
 
-    public bool getIsInFOV()
+    public bool GetIsInFOV()
     {
         return isInFOV;
+    }
+
+    public Transform GetTarget()
+    {
+        return target;
     }
 }

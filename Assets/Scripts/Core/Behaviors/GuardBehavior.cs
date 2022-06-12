@@ -70,7 +70,7 @@ public class GuardBehavior : AgentBehaviour
 
     private void Update()
     {
-        isInFieldOfView();
+        CheckFieldOfView();
         UpdateColor();
         if (guardType == GuardType.FOLLOWPATH)
         {
@@ -83,7 +83,7 @@ public class GuardBehavior : AgentBehaviour
                     ReturnPath();
                     break;
                 case GuardState.PURSUE:
-                    target = fov.visibleTargets[0];
+                    target = fov.GetTarget();
                     break;
                 default:
                     state = GuardState.SEARCH;
@@ -93,13 +93,9 @@ public class GuardBehavior : AgentBehaviour
 
         else if (guardType == GuardType.STAYS)
         {
-            print("Guard = " + guardType + " state = " + state);
             switch (state) {
-                case GuardState.RETURN:
-                    ReturnPath();
-                    break;
                 case GuardState.PURSUE:
-                    target = fov.visibleTargets[0];
+                    target = fov.GetTarget();
                     break;
                 default:
                     target = null;
@@ -109,8 +105,6 @@ public class GuardBehavior : AgentBehaviour
     }
     public override Steering GetSteering()
     {
-        print("Getting steering " + game.GetGameRunningStatus() + " collision beh = " + collisionBehavior);
-
         if (game.GetGameRunningStatus() && !collisionBehavior)
         {
             Vector2 position = new Vector2(this.transform.position.x, this.transform.position.z);
@@ -150,9 +144,9 @@ public class GuardBehavior : AgentBehaviour
         return steering;
     }
 
-    private void isInFieldOfView()
+    private void CheckFieldOfView()
     {
-        if (fov.getIsInFOV()) state = GuardState.PURSUE;
+        if (fov.GetIsInFOV()) state = GuardState.PURSUE;
         else
         {
             SetNextState();
@@ -207,10 +201,10 @@ public class GuardBehavior : AgentBehaviour
 
     public void ResetGuardState()
     {
-        state = GuardState.IDLE;
+        state = GuardState.SEARCH;
     }
 
-    public void setTarget(Transform newTarget)
+    public void SetTarget(Transform newTarget)
     {
         target = newTarget;
     }
