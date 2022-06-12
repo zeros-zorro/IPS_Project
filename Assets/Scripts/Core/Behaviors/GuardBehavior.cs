@@ -28,9 +28,13 @@ public class GuardBehavior : AgentBehaviour
 
     public float minimumAngularFactor = 0.001f;
 
-    private Transform idlePoint;
+    public Transform idlePoint = null;
+
+    private Vector3 idlePosition = Vector3.zero;
 
     public GuardType guardType;
+
+    public float timeSearching = 3.5f;
 
     [SerializeField]
     private GuardState state;
@@ -54,10 +58,21 @@ public class GuardBehavior : AgentBehaviour
     private void Start()
     {
         navMeshPath = new NavMeshPath();
-        state = GuardState.SEARCH;
+        state = GuardState.IDLE;
+
         if (guardType == GuardType.FOLLOWPATH) {
-            targetVector = guardPath.targetWaypoint.position;
+            targetVector = guardPath.GetWaypoint().position;
         }
+
+        if(idlePoint == null)
+        {
+            idlePosition = transform.position;
+        }
+        else
+        {
+            idlePosition = idlePoint.position;
+        }
+
         game = this.GetComponentInParent<GameManager>();
 
         fov = this.GetComponent<FieldOfView>();
@@ -70,23 +85,39 @@ public class GuardBehavior : AgentBehaviour
 
     private void Update()
     {
-        CheckFieldOfView();
-        UpdateColor();
+
+        if (fov.GetIsInFOV()) state = GuardState.PURSUE;
+
         if (guardType == GuardType.FOLLOWPATH)
         {
             switch (state)
             {
-                case GuardState.SEARCH:
-                    target = guardPath.targetWaypoint;
+                case GuardState.IDLE:
+                    target = guardPath.GetWaypoint();
                     break;
                 case GuardState.RETURN:
-                    ReturnPath();
+                    float distanceToStartingPoint = Vector3.Distance(transform.position, guardPath.GetStartingPoint().position);
+                    if(distanceToStartingPoint < 1f)
+                    {
+                        state = GuardState.IDLE;
+                    }
+                    else
+                    {
+                        ReturnPath();
+                    }
                     break;
                 case GuardState.PURSUE:
-                    target = fov.GetTarget();
+                    if (!fov.GetIsInFOV()) {
+                        state = GuardState.SEARCH;
+                        Invoke("SetToReturn", timeSearching);
+                    }
+                    else
+                    {
+                        target = fov.GetTarget();
+                    }
                     break;
                 default:
-                    state = GuardState.SEARCH;
+                    target = null;
                     break;
             }
         }
@@ -95,49 +126,83 @@ public class GuardBehavior : AgentBehaviour
         {
             switch (state) {
                 case GuardState.PURSUE:
-                    target = fov.GetTarget();
+                    if (!fov.GetIsInFOV())
+                    {
+                        state = GuardState.SEARCH;
+                        Invoke("SetToReturn", timeSearching);
+                    }
+                    else
+                    {
+                        target = fov.GetTarget();
+                    }
+                    break;
+                case GuardState.RETURN:
+                    ReturnPath();
                     break;
                 default:
                     target = null;
                     break;
             }
         }
+
+        CheckInFov();
+
+        UpdateColor();
     }
+
+    private void SetToReturn()
+    {
+        state = GuardState.RETURN;
+    }
+
+    private void CheckInFov()
+    {
+        if (fov.GetIsInFOV()) state = GuardState.PURSUE;
+    }
+
     public override Steering GetSteering()
     {
         if (game.GetGameRunningStatus() && !collisionBehavior)
         {
-            Vector2 position = new Vector2(this.transform.position.x, this.transform.position.z);
-            Vector2 forward = new Vector2(this.transform.forward.x, this.transform.forward.z);
-            Vector2 targetPosition;
 
-            if (state == GuardState.RETURN)
+            if(state == GuardState.SEARCH)
             {
-                targetPosition = new Vector2(targetVector.x, targetVector.z);
+                steering.angular = agent.maxAngularSpeed / 2;
             }
             else
             {
-                targetPosition = new Vector2(target.position.x, target.position.z);
-            }
+                Vector2 position = new Vector2(this.transform.position.x, this.transform.position.z);
+                Vector2 forward = new Vector2(this.transform.forward.x, this.transform.forward.z);
+                Vector2 targetPosition;
 
-            float angleToTarget = -Vector2.SignedAngle(forward, targetPosition - position);
-            float angularFactor = angleToTarget / 180f;
-
-            steering.angular = Mathf.Sign(angularFactor) * rotationSpeed;
-
-            float absAngleToTarget = Mathf.Abs(angleToTarget);
-
-            if (absAngleToTarget < angularThreshold)
-            {
-                if (absAngleToTarget < angularThreshold / 3)
+                if (state == GuardState.RETURN)
                 {
-                    steering.angular = 0;
+                    targetPosition = new Vector2(targetVector.x, targetVector.z);
                 }
-                steering.linear = Vector3.forward * speed * agent.maxAccel;
-                steering.linear = this.transform.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
+                else
+                {
+                    targetPosition = new Vector2(target.position.x, target.position.z);
+                }
+
+                float angleToTarget = -Vector2.SignedAngle(forward, targetPosition - position);
+                float angularFactor = angleToTarget / 180f;
+
+                steering.angular = Mathf.Sign(angularFactor) * rotationSpeed;
+
+                float absAngleToTarget = Mathf.Abs(angleToTarget);
+
+                if (absAngleToTarget < angularThreshold)
+                {
+                    if (absAngleToTarget < angularThreshold / 3)
+                    {
+                        steering.angular = 0;
+                    }
+                    steering.linear = Vector3.forward * speed * agent.maxAccel;
+                    steering.linear = this.transform.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
+                }
             }
         }
-        else
+        else if (!collisionBehavior)
         {
             steering = new Steering();
         }
@@ -145,23 +210,17 @@ public class GuardBehavior : AgentBehaviour
         return steering;
     }
 
-    private void CheckFieldOfView()
-    {
-        if (fov.GetIsInFOV()) state = GuardState.PURSUE;
-        else
-        {
-            SetNextState();
-        }
-    }
-
     private void ReturnPath()
     {
-        idlePoint = guardPath.targetWaypoint;
+        idlePosition = guardType == GuardType.FOLLOWPATH ?
+            guardPath.GetStartingPoint().position :
+            idlePosition;
+
         pathElapsed += Time.deltaTime;
         if (pathElapsed > 0.5f)
         {
             pathElapsed -= 0.5f;
-            NavMesh.CalculatePath(transform.position, idlePoint.position, NavMesh.AllAreas, navMeshPath);
+            NavMesh.CalculatePath(transform.position, idlePosition, NavMesh.AllAreas, navMeshPath);
 
             int index = 0;
             float distance = Vector3.Distance(transform.position, navMeshPath.corners[index]);
@@ -175,19 +234,6 @@ public class GuardBehavior : AgentBehaviour
             targetVector = navMeshPath.corners[index];
         }
 
-    }
-
-    private void SetNextState()
-    {
-        switch (guardType)
-        {
-            case GuardType.FOLLOWPATH:
-                state = GuardState.RETURN;
-                break;
-            default:
-                state = GuardState.IDLE;
-                break;
-        }
     }
 
     public GuardState GetGuardState()
