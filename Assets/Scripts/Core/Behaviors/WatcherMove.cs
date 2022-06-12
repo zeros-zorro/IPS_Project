@@ -27,6 +27,7 @@ public class WatcherMove : AgentBehaviour
     public float speed = 10.0f;
     public float angularThreshold = 10.0f;
     public float rotationSpeed = 10.0f;
+    [SerializeField]
     public Transform target;
     [SerializeField]
     private WatcherState watcherState;
@@ -37,6 +38,7 @@ public class WatcherMove : AgentBehaviour
 
     public float minimumAngularFactor = 0.001f;
     public Transform idlePoint;
+    [SerializeField]
     private Vector3 targetVector;
 
     private NavMeshPath navMeshPath;
@@ -176,7 +178,7 @@ public class WatcherMove : AgentBehaviour
         }
         print(steering.angular);
 
-        //Debug.DrawRay(transform.position, -(transform.position - targetVector), Color.black);
+        Debug.DrawRay(transform.position, -(transform.position - targetVector), Color.black);
         return steering;
     }
 
@@ -208,10 +210,10 @@ public class WatcherMove : AgentBehaviour
             //print(targetVector);
             targetVector = navMeshPath.corners[index];
         }
-        /*
+        
         for (int i = 0; i < navMeshPath.corners.Length - 1; i++)
             Debug.DrawLine(navMeshPath.corners[i], navMeshPath.corners[i + 1], Color.red);
-        */
+        
     }
 
     private void getNextState()
