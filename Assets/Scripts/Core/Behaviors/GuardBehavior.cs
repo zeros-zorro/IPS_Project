@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public enum GuardState
 {
+    ROTATE,
     IDLE,
     PURSUE,
     SEARCH,
@@ -31,6 +32,7 @@ public class GuardBehavior : AgentBehaviour
     public Transform idlePoint = null;
 
     private Vector3 idlePosition = Vector3.zero;
+    private float idleDirection = 0;
 
     public GuardType guardType;
 
@@ -67,11 +69,15 @@ public class GuardBehavior : AgentBehaviour
         if(idlePoint == null)
         {
             idlePosition = transform.position;
+            idleDirection = Vector3.Angle(transform.forward, Vector3.forward);
         }
         else
         {
             idlePosition = idlePoint.position;
+            idleDirection = Vector3.Angle(idlePoint.forward, Vector3.forward);
         }
+
+        print(idleDirection);
 
         game = this.GetComponentInParent<GameManager>();
 
@@ -85,7 +91,6 @@ public class GuardBehavior : AgentBehaviour
 
     private void Update()
     {
-
         if (fov.GetIsInFOV()) state = GuardState.PURSUE;
 
         if (guardType == GuardType.FOLLOWPATH)
@@ -99,6 +104,7 @@ public class GuardBehavior : AgentBehaviour
                     float distanceToStartingPoint = Vector3.Distance(transform.position, guardPath.GetStartingPoint().position);
                     if(distanceToStartingPoint < 1f)
                     {
+                        steering = new Steering();
                         state = GuardState.IDLE;
                     }
                     else
@@ -109,6 +115,7 @@ public class GuardBehavior : AgentBehaviour
                 case GuardState.PURSUE:
                     if (!fov.GetIsInFOV()) {
                         state = GuardState.SEARCH;
+                        steering = new Steering();
                         Invoke("SetToReturn", timeSearching);
                     }
                     else
@@ -129,6 +136,7 @@ public class GuardBehavior : AgentBehaviour
                     if (!fov.GetIsInFOV())
                     {
                         state = GuardState.SEARCH;
+                        steering = new Steering();
                         Invoke("SetToReturn", timeSearching);
                     }
                     else
@@ -137,7 +145,29 @@ public class GuardBehavior : AgentBehaviour
                     }
                     break;
                 case GuardState.RETURN:
-                    ReturnPath();
+                    float distanceToStartingPoint = Vector3.Distance(transform.position, idlePosition);
+                    if (distanceToStartingPoint < 1f)
+                    {
+                        state = GuardState.ROTATE;
+                        steering = new Steering();
+                    }
+                    else
+                    {
+                        ReturnPath();
+                    }
+                    break;
+                case GuardState.ROTATE:
+
+                    float directionDiff = Mathf.Abs(Vector3.Angle(transform.forward, Vector3.forward) - idleDirection);
+
+                    print(directionDiff);
+                    print(Vector3.Angle(transform.forward, Vector3.forward));
+
+                    if(directionDiff < 2f)
+                    {
+                        steering = new Steering();
+                        state = GuardState.IDLE;
+                    }
                     break;
                 default:
                     target = null;
@@ -165,7 +195,7 @@ public class GuardBehavior : AgentBehaviour
         if (game.GetGameRunningStatus() && !collisionBehavior)
         {
 
-            if(state == GuardState.SEARCH)
+            if(state == GuardState.SEARCH || state == GuardState.ROTATE)
             {
                 steering.angular = agent.maxAngularSpeed / 2;
             }
