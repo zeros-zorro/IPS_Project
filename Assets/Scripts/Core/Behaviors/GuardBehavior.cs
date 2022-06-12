@@ -35,7 +35,7 @@ public class GuardBehavior : AgentBehaviour
     [SerializeField]
     private GuardState state;
     private bool collisionBehavior = false;
-    private bool doTurn = false;
+
     private GameManager game;
     private Audio audioGuard;
 
@@ -69,49 +69,46 @@ public class GuardBehavior : AgentBehaviour
     private void Update()
     {
         isInFieldOfView();
+        UpdateColor();
         if (guardType == GuardType.FOLLOWPATH)
         {
-            if (state == GuardState.SEARCH)
+            switch (state)
             {
-                target = guardPath.targetWaypoint;
-            }
-            else if (state == GuardState.RETURN)
-            {
-                returnPath();
-            }
-            else if (state == GuardState.PURSUE)
-            {
-                target = fov.visibleTargets[0];
-            }
-            else // no idle state
-            {
-                state = GuardState.SEARCH;
+                case GuardState.SEARCH:
+                    target = guardPath.targetWaypoint;
+                    break;
+                case GuardState.RETURN:
+                    ReturnPath();
+                    break;
+                case GuardState.PURSUE:
+                    target = fov.visibleTargets[0];
+                    break;
+                default:
+                    state = GuardState.SEARCH;
+                    break;
             }
         }
 
-        if (guardType == GuardType.STAYS)
+        else if (guardType == GuardType.STAYS)
         {
-            if (state == GuardState.SEARCH)
-            {
-                target = null;
-                doTurn = true;
-            }
-            else if (state == GuardState.RETURN)
-            {
-                returnPath();
-            }
-            else if (state == GuardState.PURSUE)
-            {
-                target = fov.visibleTargets[0];
-            }
-            else //idle state
-            {
-                target = null;
+            print(state);
+
+            switch (state) {
+                case GuardState.RETURN:
+                    ReturnPath();
+                    break;
+                case GuardState.PURSUE:
+                    target = fov.visibleTargets[0];
+                    break;
+                default:
+                    target = null;
+                    break;
             }
         }
     }
     public override Steering GetSteering()
     {
+        print("Getting steering " + game.GetGameRunningStatus() + " collision beh = " + collisionBehavior);
 
         if (game.GetGameRunningStatus() && !collisionBehavior)
         {
@@ -143,7 +140,6 @@ public class GuardBehavior : AgentBehaviour
                 steering.linear = Vector3.forward * speed * agent.maxAccel;
                 steering.linear = this.transform.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
             }
-            print(steering.angular);
         }
         else if (!game.GetGameRunningStatus())
         {
@@ -162,7 +158,7 @@ public class GuardBehavior : AgentBehaviour
         }
     }
 
-    private void returnPath()
+    private void ReturnPath()
     {
         idlePoint = guardPath.targetWaypoint;
         pathElapsed += Time.deltaTime;
@@ -211,6 +207,11 @@ public class GuardBehavior : AgentBehaviour
     public void ResetGuardState()
     {
         state = GuardState.IDLE;
+    }
+
+    public void setTarget(Transform newTarget)
+    {
+        target = newTarget;
     }
 
     void OnCollisionEnter(Collision collision)

@@ -11,7 +11,6 @@ public class FieldOfView : MonoBehaviour
     public LayerMask targetMask;
     public LayerMask obstacleMask;
 
-
     public List<Transform> visibleTargets = new List<Transform>();
 
     public float meshResolution;
@@ -61,7 +60,8 @@ public class FieldOfView : MonoBehaviour
                 {
                     visibleTargets.Add(target);
                     isInFOV = true;
-                    //watcher.target = target;
+                    guard.setTarget(target);
+                    print("Changed target, state is = " + guard.GetGuardState());
                 }
             }
         }
