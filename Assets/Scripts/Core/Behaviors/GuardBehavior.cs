@@ -120,15 +120,16 @@ public class GuardBehavior : AgentBehaviour
                 targetPosition = new Vector2(target.position.x, target.position.z);
             }
 
-
             float angleToTarget = -Vector2.SignedAngle(forward, targetPosition - position);
             float angularFactor = angleToTarget / 180f;
 
             steering.angular = Mathf.Sign(angularFactor) * rotationSpeed;
 
-            if (Mathf.Abs(angleToTarget) < angularThreshold)
+            float absAngleToTarget = Mathf.Abs(angleToTarget);
+
+            if (absAngleToTarget < angularThreshold)
             {
-                if (Mathf.Abs(angleToTarget) < angularThreshold / 3)
+                if (absAngleToTarget < angularThreshold / 3)
                 {
                     steering.angular = 0;
                 }
@@ -136,7 +137,7 @@ public class GuardBehavior : AgentBehaviour
                 steering.linear = this.transform.TransformDirection(Vector3.ClampMagnitude(steering.linear, agent.maxAccel));
             }
         }
-        else if (!game.GetGameRunningStatus())
+        else
         {
             steering = new Steering();
         }
@@ -184,7 +185,7 @@ public class GuardBehavior : AgentBehaviour
                 state = GuardState.RETURN;
                 break;
             default:
-                state = GuardState.SEARCH;
+                state = GuardState.IDLE;
                 break;
         }
     }
@@ -192,21 +193,6 @@ public class GuardBehavior : AgentBehaviour
     public GuardState GetGuardState()
     {
         return state;
-    }
-
-    public void SetGuardState(GuardState nextState)
-    {
-        state = nextState;
-    }
-
-    public void ResetGuardState()
-    {
-        state = GuardState.SEARCH;
-    }
-
-    public void SetTarget(Transform newTarget)
-    {
-        target = newTarget;
     }
 
     void OnCollisionEnter(Collision collision)

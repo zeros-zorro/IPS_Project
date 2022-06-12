@@ -21,7 +21,6 @@ public class FieldOfView : MonoBehaviour
     private GuardBehavior guard;
     private bool isInFOV;
 
-    // Start is called before the first frame update
     void Start()
     {
         guard = this.GetComponentInParent<GuardBehavior>();
@@ -144,22 +143,6 @@ public class FieldOfView : MonoBehaviour
             dst = _dst;
             angles = _angles;
         }
-    }
-
-
-    private void Update()
-    {
-        CancelInvoke();
-
-        if (!isInFOV && guard.GetGuardState() == GuardState.PURSUE)
-        {
-            Invoke("ResetGuard", 3.5f);
-        }
-    }
-
-    private void ResetGuard()
-    {
-        guard.ResetGuardState();
     }
 
     void LateUpdate()
