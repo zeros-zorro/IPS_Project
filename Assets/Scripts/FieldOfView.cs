@@ -11,7 +11,7 @@ public class FieldOfView : MonoBehaviour
     public LayerMask targetMask;
     public LayerMask obstacleMask;
 
-    [HideInInspector]
+
     public List<Transform> visibleTargets = new List<Transform>();
 
     public float meshResolution;
@@ -20,6 +20,7 @@ public class FieldOfView : MonoBehaviour
     Mesh viewMesh;
 
     private GuardBehavior guard;
+    private bool isInFOV;
 
     IEnumerator FindTargetsWithDelay(float delay)
     {
@@ -33,6 +34,8 @@ public class FieldOfView : MonoBehaviour
     void FindVisibleTargets()
     {
         visibleTargets.Clear();
+        isInFOV = false;
+        //watcher.target = null;
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
         for (int i = 0; i < targetsInViewRadius.Length; i++)
@@ -46,6 +49,8 @@ public class FieldOfView : MonoBehaviour
                 if(!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
                     visibleTargets.Add(target);
+                    isInFOV = true;
+                    //watcher.target = target;
                 }
             }
         }
@@ -137,6 +142,7 @@ public class FieldOfView : MonoBehaviour
         viewMesh = new Mesh();
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
+        isInFOV = false;
 
         StartCoroutine("FindTargetsWithDelay", .2f);
     }
@@ -164,5 +170,10 @@ public class FieldOfView : MonoBehaviour
     void LateUpdate()
     {
         DrawFieldOfView();
+    }
+
+    public bool getIsInFOV()
+    {
+        return isInFOV;
     }
 }
