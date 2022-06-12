@@ -7,7 +7,7 @@ public class GuardPath : AgentBehaviour
     public float speed = 5f;
     public float waitTime = 3f;
     public Transform pathHolder;
-    public Transform targetWaypoint;
+    private Transform targetWaypoint;
 
     private void Start()
     {
@@ -20,6 +20,7 @@ public class GuardPath : AgentBehaviour
         StartCoroutine(FollowPath(waypoints));
 
     }
+
     IEnumerator FollowPath(Transform[] waypoints)
     {
         transform.position = waypoints[0].position;
@@ -49,5 +50,15 @@ public class GuardPath : AgentBehaviour
         Gizmos.DrawLine(previousPosition, startPosition);
     }
 
+    public Transform GetWaypoint()
+    {
+        return targetWaypoint;
+    }
+
+    public Transform GetStartingPoint()
+    {
+        return pathHolder.GetComponentInChildren<Transform>();
+    }
 }
+
 
