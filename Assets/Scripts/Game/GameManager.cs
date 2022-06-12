@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public static string RING_TAG       = "Ring";
     public static string CONTROLLER_TAG = "GameController";
     public static string GEM_TAG        = "Gem";
+    public static string GUARD_TAG        = "Guard";
 
     private GameObject[] playerList;
     private int[] scoreList;
