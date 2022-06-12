@@ -20,7 +20,7 @@ public enum GuardType
 public class GuardBehavior : AgentBehaviour
 {
 
-    public GuardPath guardPath;
+    public GuardPath guardPath = null;
 
     public float speed = 10.0f;
     public float angularThreshold = 10.0f;
@@ -55,7 +55,9 @@ public class GuardBehavior : AgentBehaviour
     {
         navMeshPath = new NavMeshPath();
         state = GuardState.SEARCH;
-        targetVector = guardPath.targetWaypoint.position;
+        if (guardType == GuardType.FOLLOWPATH) {
+            targetVector = guardPath.targetWaypoint.position;
+        }
         game = this.GetComponentInParent<GameManager>();
 
         fov = this.GetComponent<FieldOfView>();
@@ -91,8 +93,7 @@ public class GuardBehavior : AgentBehaviour
 
         else if (guardType == GuardType.STAYS)
         {
-            print(state);
-
+            print("Guard = " + guardType + " state = " + state);
             switch (state) {
                 case GuardState.RETURN:
                     ReturnPath();
