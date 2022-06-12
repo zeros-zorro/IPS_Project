@@ -194,9 +194,18 @@ public class GuardBehavior : AgentBehaviour
         }
     }
 
-    public GuardState GetState() {
+    public GuardState GetGuardState() {
         return state;
     }
+
+    public void SetGuardState(GuardState nextState) {
+        state = nextState;
+    }
+
+    public void ResetGuardState()
+    {
+        state = GuardState.IDLE;
+    } 
 
     void OnCollisionEnter(Collision collision)
     {

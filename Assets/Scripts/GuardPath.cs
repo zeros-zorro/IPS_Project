@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class Guard : AgentBehaviour
+
+public class GuardPath : AgentBehaviour
 {
     public float speed = 5f;
     public float waitTime = 3f;
@@ -10,11 +11,6 @@ public class Guard : AgentBehaviour
 
     private void Start()
     {
-
-        //game = this.GetComponentInParent<CelluloAgent>();
-        
-        
-
         Transform[] waypoints = new Transform[pathHolder.childCount];
         for (int i = 0; i < waypoints.Length; i++)
         {

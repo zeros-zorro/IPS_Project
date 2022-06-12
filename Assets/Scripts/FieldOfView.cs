@@ -22,6 +22,18 @@ public class FieldOfView : MonoBehaviour
     private GuardBehavior guard;
     private bool isInFOV;
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        guard = this.GetComponentInParent<GuardBehavior>();
+        viewMesh = new Mesh();
+        viewMesh.name = "View Mesh";
+        viewMeshFilter.mesh = viewMesh;
+        isInFOV = false;
+
+        StartCoroutine("FindTargetsWithDelay", .2f);
+    }
+
     IEnumerator FindTargetsWithDelay(float delay)
     {
         while (true)
@@ -135,28 +147,17 @@ public class FieldOfView : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        guard = this.GetComponentInParent<GuardBehavior>();
-        viewMesh = new Mesh();
-        viewMesh.name = "View Mesh";
-        viewMeshFilter.mesh = viewMesh;
-        isInFOV = false;
-
-        StartCoroutine("FindTargetsWithDelay", .2f);
-    }
 
     private void Update()
     {
-        if (visibleTargets.Count > 0 && guard.GetGuardState() != GuardBehavior.WatcherState.PURSUE)
+        if (visibleTargets.Count > 0 && guard.GetGuardState() != GuardState.PURSUE)
         {
             CancelInvoke();
-            guard.SetGuardState(GuardBehavior.WatcherState.PURSUE);
-        } else if (visibleTargets.Count == 0 && guard.GetGuardState() == GuardBehavior.WatcherState.PURSUE)
+            guard.SetGuardState(GuardState.PURSUE);
+        } else if (visibleTargets.Count == 0 && guard.GetGuardState() == GuardState.PURSUE)
         {
             CancelInvoke();
-            guard.SetGuardState(GuardBehavior.WatcherState.SEARCH);
+            guard.SetGuardState(GuardState.SEARCH);
             Invoke("ResetGuard", 3.5f);
         }
     }
